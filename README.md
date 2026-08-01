@@ -9,11 +9,13 @@ A dental appointment management system with a Spring Boot backend and a React (V
 - **Database:** MySQL 8.0
 - **Cache:** Redis 7.2
 - **Containerization:** Docker, Docker Compose
+- **API Docs:** springdoc-openapi (Swagger UI)
 
 ## Project Structure
 
 ```
 dentalcare/
+├── .env.template              # Root-level template (Docker Compose vars)
 ├── docker-compose.yml         # Full stack (backend, frontend, MySQL, Redis)
 ├── docker-compose.dev.yml     # Just MySQL + Redis, for local dev without Docker
 ├── backend/
@@ -32,8 +34,6 @@ dentalcare/
 ## Prerequisites
 
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running
-- (Optional, for local non-Docker backend dev) Java 21 and Maven
-- (Optional, for local non-Docker frontend dev) Node.js 20+
 
 ## Setup
 
@@ -44,7 +44,21 @@ git clone https://github.com/rgrmlbn/Dental-Appointment-System.git
 cd Dental-Appointment-System
 ```
 
-### 2. Configure backend environment variables
+### 2. Configure root environment variables (for Docker Compose)
+
+```bash
+cp .env.template .env
+```
+
+Open `.env` and set:
+
+```
+DB_PASSWORD=your_own_db_password
+```
+
+This feeds `${DB_PASSWORD}` inside `docker-compose.yml`, which sets MySQL's root password when the container starts.
+
+### 3. Configure backend environment variables
 
 ```bash
 cd backend
@@ -61,9 +75,11 @@ MAIL_USERNAME=your_gmail_address
 MAIL_PASSWORD=your_gmail_app_password
 ```
 
+> `DB_PASSWORD` here should match the value you set in the root `.env` — the root file configures MySQL itself, this one tells Spring Boot what password to connect with.
+
 > Note: `MAIL_PASSWORD` must be a [Gmail App Password](https://myaccount.google.com/apppasswords), not your regular Gmail login password.
 
-### 3. Configure frontend environment variables
+### 4. Configure frontend environment variables
 
 ```bash
 cd ../frontend
@@ -76,7 +92,7 @@ Default values work out of the box for local Docker use:
 VITE_API_URL=http://localhost:8080
 ```
 
-### 4. Run the full stack with Docker
+### 5. Run the full stack with Docker
 
 From the project root:
 
@@ -90,7 +106,7 @@ This starts:
 - Backend API on `localhost:8080`
 - Frontend on `localhost:5173`
 
-### 5. Access the app
+### 6. Access the app
 
 - Frontend: [http://localhost:5173](http://localhost:5173)
 - Backend API: [http://localhost:8080](http://localhost:8080)
@@ -101,12 +117,13 @@ This starts:
 Useful for active backend development with hot reload / debugging in an IDE.
 
 1. Start just the database and cache:
+   
    ```bash
    docker-compose -f docker-compose.dev.yml up
    ```
-2. Open the `backend/` folder in your IDE (e.g. IntelliJ) as its own project.
-3. Make sure `backend/.env` is filled in — it's read automatically via `spring-dotenv`.
-4. Run the Spring Boot application (`dev` profile is active by default).
+3. Open the `backend/` folder in your IDE (e.g. IntelliJ) as its own project.
+4. Make sure `backend/.env` is filled in — it's read automatically via `spring-dotenv`.
+5. Run the Spring Boot application (`dev` profile is active by default).
 
 ## Running the Frontend Locally (without Docker)
 
@@ -119,6 +136,12 @@ npm run dev
 Runs on [http://localhost:5173](http://localhost:5173) by default, pointing at whatever `VITE_API_URL` is set in `frontend/.env`.
 
 ## Environment Variables Reference
+
+### Root (`.env`)
+
+| Variable | Description |
+|---|---|
+| `DB_PASSWORD` | MySQL root password (used by Docker Compose to configure the `mysql` service) |
 
 ### Backend (`backend/.env`)
 
@@ -138,9 +161,12 @@ Runs on [http://localhost:5173](http://localhost:5173) by default, pointing at w
 
 ## Notes
 
-- Never commit `.env` files — only `.env.example` files are tracked in git.
+- Never commit `.env` files — only `.env.template` files are tracked in git.
 - `application-dev.properties` and `application-docker.properties` are safe to commit; they only reference environment variables (`${VAR}`), never real values.
+- Rate limiting for login attempts is configured via `app.rate-limit.login.*` in the properties files and backed by Redis.
 - To reset the database to a clean state, stop containers and remove volumes:
+  
   ```bash
   docker-compose down -v
   ```
+- Remember to generate a fresh, unique `JWT_SECRET` for every real project you spin off from this template — never reuse the same secret across projects.
