@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600&display=swap');
+
+:root {
+  --navy:       #0B2447;
+  --blue:       #1565C0;
+  --sky:        #1E88E5;
+  --ice:        #E3F2FD;
+  --mint:       #E8F5E9;
+  --white:      #FFFFFF;
+  --slate:      #546E7A;
+  --light-gray: #F5F8FA;
+  --border:     #E0EAF4;
+  --text:       #1A2F4E;
+  --text-light: #607D8B;
+  --accent:     #00ACC1;
+  --accent2:    #43A047;
+  --shadow-sm:  0 2px 8px rgba(11,36,71,.07);
+  --shadow-md:  0 8px 32px rgba(11,36,71,.12);
+  --shadow-lg:  0 20px 60px rgba(11,36,71,.16);
+  --radius:     14px;
+  --radius-lg:  22px;
+  --font-display: 'Fraunces', serif;
+  --font-body:    'DM Sans', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+.landing-page {
+  font-family: var(--font-body);
+  color: var(--text);
+  background: var(--white);
+  overflow-x: hidden;
+}

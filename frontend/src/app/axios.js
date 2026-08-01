@@ -1,0 +1,16 @@
+// app/axios.js
+import axios from "axios";
+
+const api = axios.create({
+baseURL: import.meta.env.VITE_API_URL ?? "http://13.236.134.79:8080/api",
+});
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+export default api;

@@ -1,0 +1,66 @@
+services:
+
+  mysql:
+    image: mysql:8.0
+    container_name: dental_mysql
+    env_file:
+      - ./backend/.env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: dental_appointment
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - dental-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7.2
+    container_name: dental_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - dental-net
+
+  app:
+    build: ./backend
+    container_name: dental_app
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    env_file:
+      - ./backend/.env
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
+    networks:
+      - dental-net
+
+  frontend:
+    build: ./frontend
+    container_name: dental_frontend
+    depends_on:
+      - app
+    ports:
+      - "5173:80"
+    networks:
+      - dental-net
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  dental-net:
+    driver: bridge

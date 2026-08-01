@@ -1,0 +1,308 @@
+/* ─────────────────────────────────────────────────────────────
+   ADMIN SECTION — append these styles to DashboardPage.css
+   ───────────────────────────────────────────────────────────── */
+
+/* ── Admin tab panel wrapper ───────────────────────────────── */
+.admin-tab-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Filter bar ────────────────────────────────────────────── */
+.admin-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.admin-filter-bar--inline {
+  flex-wrap: nowrap;
+}
+
+.admin-filter-bar--scroll {
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  padding-bottom: 0.25rem;
+  /* hide scrollbar on webkit */
+  scrollbar-width: none;
+}
+.admin-filter-bar--scroll::-webkit-scrollbar { display: none; }
+
+/* ── Filter chip ───────────────────────────────────────────── */
+.admin-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.38rem 0.85rem;
+  border-radius: 100px;
+  border: 1.5px solid #e3eaf5;
+  background: #f8fafc;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #607d8b;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.admin-filter-chip:hover {
+  background: #e3eaf5;
+  color: #0b2447;
+}
+
+.admin-filter-chip--active {
+  background: linear-gradient(135deg, #0b2447 0%, #1565c0 100%);
+  border-color: transparent;
+  color: #fff;
+}
+
+.admin-filter-chip--active:hover {
+  background: linear-gradient(135deg, #0d2d5c 0%, #1976d2 100%);
+  color: #fff;
+}
+
+.admin-filter-chip__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 100px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.22);
+  color: inherit;
+}
+
+.admin-filter-chip:not(.admin-filter-chip--active) .admin-filter-chip__count {
+  background: #e3eaf5;
+  color: #607d8b;
+}
+
+/* ── Admin appointment card — status toggle button ─────────── */
+.admin-appt-card__status-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: #f1f5f9;
+  border: 1.5px solid #e3eaf5;
+  color: #607d8b;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  flex-shrink: 0;
+}
+
+.admin-appt-card__status-btn:hover {
+  background: #e3eaf5;
+  border-color: #90caf9;
+  color: #0b2447;
+  transform: translateY(-1px);
+}
+
+/* ── Patient + doctor names inside appointment card ─────────── */
+.admin-appt-card__people {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.admin-appt-card__person {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.79rem;
+  font-weight: 600;
+}
+
+.admin-appt-card__person--patient {
+  color: #2e7d32;
+}
+
+.admin-appt-card__person--doctor {
+  color: #1565c0;
+}
+
+/* ── Users toolbar ─────────────────────────────────────────── */
+.admin-users__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.admin-users__search {
+  flex: 1;
+  min-width: 180px;
+  background: #f8fafc;
+  border: 1.5px solid #e3eaf5;
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.88rem;
+  color: #0b2447;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.admin-users__search:focus {
+  border-color: #1565c0;
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.1);
+  background: #fff;
+}
+
+.admin-users__search::placeholder {
+  color: #b0bec5;
+}
+
+/* ── Users list ────────────────────────────────────────────── */
+.admin-users__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+/* ── User row ──────────────────────────────────────────────── */
+.admin-user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.1rem;
+  background: #f8fafc;
+  border: 1px solid #e3eaf5;
+  border-radius: 12px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.admin-user-row:hover {
+  border-color: #90caf9;
+  box-shadow: 0 3px 12px rgba(21, 101, 192, 0.08);
+}
+
+.admin-user-row__left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.admin-user-row__right {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+/* ── User avatar ───────────────────────────────────────────── */
+.admin-user-row__avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.admin-user-row__avatar--doctor {
+  background: linear-gradient(135deg, #0b2447 0%, #1565c0 100%);
+}
+
+.admin-user-row__avatar--patient {
+  background: linear-gradient(135deg, #1b5e20 0%, #43a047 100%);
+}
+
+.admin-user-row__avatar--admin {
+  background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%);
+}
+
+/* ── User info ─────────────────────────────────────────────── */
+.admin-user-row__info {
+  min-width: 0;
+}
+
+.admin-user-row__name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #0b2447;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.admin-user-row__email {
+  font-size: 0.76rem;
+  color: #78909c;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+/* ── Role badge ────────────────────────────────────────────── */
+.admin-user-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 100px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-user-role-badge--doctor {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.admin-user-role-badge--patient {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.admin-user-role-badge--admin {
+  background: #f3e5f5;
+  color: #7b1fa2;
+}
+
+/* ── Admin off-day row extra ───────────────────────────────── */
+.admin-offday-row__doctor {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #1565c0;
+  margin-top: 1px;
+}
+
+/* ── Responsive ────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .admin-users__toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-filter-bar--inline {
+    flex-wrap: wrap;
+  }
+
+  .admin-user-row__email {
+    max-width: 140px;
+  }
+
+  .admin-user-role-badge {
+    display: none;
+  }
+}

@@ -1,0 +1,77 @@
+[33mcommit 6bac1b665129868862a24a3199518a963fdceddd[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Mon May 18 20:18:05 2026 +0800
+
+    Update: Fix Schedule Service Bug
+
+[33mcommit c40d5d9d5e7534c4a28bdf98709f16361f763585[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Mon May 18 20:13:53 2026 +0800
+
+    Updates: Add Appointment Service. Remaining bug in Schedule Service Impl
+
+[33mcommit 9b5ae25e31020fc2d4b77d0bea996d35c73d8ead[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Sun May 17 09:55:50 2026 +0800
+
+    Updates: Add Doctor Appointment Schedules - Block Weekend/Holidays/Leaves
+
+[33mcommit 263002821137dc51774ab4a24ce5385f5ffbff2b[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Sat May 16 21:15:49 2026 +0800
+
+    Updates: Changes on Doctor/s
+
+[33mcommit 260f867c466042c061a3c1f26c9b4812eed00513[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Fri May 15 20:44:40 2026 +0800
+
+    Updates: Register Doctor, Update Doctor, Get All Doctor End Points
+
+[33mcommit bf596bf5f73eedf12c84a910ca54cc6cc29117cd[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Sun May 3 17:33:40 2026 +0800
+
+    new updates
+
+[33mcommit b9eea8306df5b869126cc8bfea9137028ae09b2d[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Sun May 3 15:44:59 2026 +0800
+
+    Robust Authentication
+
+[33mcommit f22f8408d17fe4074f94b96cc80c788e8fe3f4c8[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Fri May 1 21:39:51 2026 +0800
+
+    new fields
+
+[33mcommit 1e81726324a464f6d36bbd50c92679b2dbdc2015[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Thu Apr 30 08:15:51 2026 +0800
+
+    security updates
+
+[33mcommit ce3e11469e49a042a30ab1b28eb98a05d9b8722a[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Tue Apr 28 21:45:11 2026 +0800
+
+    New Updates - Register Method, Add Exceptions and Global Handler for Bad Credentials
+
+[33mcommit b8c18fb066318b3d4ba55431a88cbac9ad259f4e[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Mon Apr 27 20:18:41 2026 +0800
+
+    add token exception
+
+[33mcommit df5a856995a5f00b9766396fabc20a03efd7a745[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Mon Apr 27 19:52:25 2026 +0800
+
+    Add exceptions, update user method, builder for error response, custom security handler
+
+[33mcommit cdb9c889f17604d9ed06ab0f93c21faec2330752[m
+Author: Roger Malabanan <rogermalabanan2109@gmail.com>
+Date:   Sat Apr 25 21:08:18 2026 +0800
+
+    Initial commit

@@ -1,0 +1,335 @@
+/* ── AppointmentPage.css ────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap');
+
+/* ── Root / Page ─────────────────────────────────────────────── */
+.appt-page {
+  min-height: 100vh;
+  background: linear-gradient(155deg, #0B2447 0%, #1565C0 55%, #1E88E5 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 5rem 1.5rem 3rem;
+  position: relative;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* ── Background glows ────────────────────────────────────────── */
+.appt-page__glow-1 {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 50% at 30% 60%, rgba(30, 136, 229, 0.2) 0%, transparent 70%);
+}
+
+.appt-page__glow-2 {
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+/* ── Back link ───────────────────────────────────────────────── */
+.appt-page__back {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.75rem;
+  z-index: 10;
+}
+
+.appt-page__back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.45rem 0.9rem;
+  border-radius: 50px;
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.appt-page__back-link:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Card ────────────────────────────────────────────────────── */
+.appt-card {
+  width: 100%;
+  max-width: 560px;
+  background: #fff;
+  border-radius: 22px;
+  padding: 2.5rem 2.25rem;
+  box-shadow: 0 24px 80px rgba(11, 36, 71, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Logo ────────────────────────────────────────────────────── */
+.appt-card__logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.75rem;
+  background: linear-gradient(135deg, #0B2447 0%, #1565C0 100%);
+  border-radius: 14px;
+  padding: 0.75rem 1.4rem;
+  box-shadow: 0 4px 18px rgba(21, 101, 192, 0.38);
+}
+
+.appt-card__logo-img {
+  height: 38px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* ── Header ──────────────────────────────────────────────────── */
+.appt-card__header {
+  margin-bottom: 1.25rem;
+}
+
+.appt-card__title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0B2447;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0 0 0.35rem;
+}
+
+.appt-card__subtitle {
+  font-size: 0.88rem;
+  color: #607D8B;
+  font-weight: 300;
+  margin: 0;
+}
+
+/* ── Info banner ─────────────────────────────────────────────── */
+.appt-card__info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  background: rgba(227, 242, 253, 0.55);
+  border: 1.5px solid rgba(21, 101, 192, 0.18);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.82rem;
+  color: #1565C0;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.appt-card__info-icon {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: #1565C0;
+  display: flex;
+}
+
+/* ── Sections ────────────────────────────────────────────────── */
+.appt-section {
+  margin-bottom: 1.5rem;
+}
+
+.appt-section__title {
+  font-size: 0.73rem;
+  font-weight: 700;
+  color: #0B2447;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1.5px solid rgba(21, 101, 192, 0.12);
+}
+
+/* ── Grid ────────────────────────────────────────────────────── */
+.appt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* ── Fields ──────────────────────────────────────────────────── */
+.appt-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.appt-field--full {
+  grid-column: 1 / -1;
+}
+
+.appt-field__label {
+  font-size: 0.79rem;
+  font-weight: 600;
+  color: #0B2447;
+  letter-spacing: 0.01em;
+}
+
+.appt-field__required {
+  color: #E53935;
+  margin-left: 2px;
+}
+
+.appt-field__error {
+  font-size: 0.75rem;
+  color: #E53935;
+  font-weight: 500;
+}
+
+/* ── Inputs ──────────────────────────────────────────────────── */
+.appt-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.7rem 1rem;
+  border-radius: 9px;
+  border: 1.5px solid rgba(21, 101, 192, 0.18);
+  background: rgba(227, 242, 253, 0.3);
+  font-size: 0.9rem;
+  color: #0B2447;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.appt-input:focus {
+  border-color: #1565C0;
+  box-shadow: 0 0 0 3px rgba(21, 101, 192, 0.11);
+  background: #fff;
+}
+
+.appt-input--error {
+  border-color: #E53935;
+  background: rgba(229, 57, 53, 0.04);
+}
+
+.appt-select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231565C0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  padding-right: 2.4rem;
+  cursor: pointer;
+}
+
+.appt-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+/* ── Submit button ───────────────────────────────────────────── */
+.appt-card__submit {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.85rem;
+  background: linear-gradient(135deg, #0B2447 0%, #1565C0 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.97rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 18px rgba(21, 101, 192, 0.38);
+  transition: transform 0.15s, box-shadow 0.2s;
+}
+
+.appt-card__submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(21, 101, 192, 0.45);
+}
+
+/* ── Footer ──────────────────────────────────────────────────── */
+.appt-card__footer {
+  text-align: center;
+  font-size: 0.86rem;
+  color: #607D8B;
+  margin: 1.1rem 0 0;
+}
+
+.appt-card__footer-link {
+  color: #1565C0;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.appt-card__footer-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Success screen ──────────────────────────────────────────── */
+.appt-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem 0 0.5rem;
+}
+
+.appt-success__icon {
+  color: #1565C0;
+  margin-bottom: 1.1rem;
+}
+
+.appt-success__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0B2447;
+  margin-bottom: 0.75rem;
+}
+
+.appt-success__desc {
+  font-size: 0.9rem;
+  color: #455A64;
+  line-height: 1.6;
+  margin-bottom: 0.6rem;
+}
+
+.appt-success__note {
+  font-size: 0.82rem;
+  color: #607D8B;
+  line-height: 1.5;
+  margin-bottom: 1.75rem;
+}
+
+.appt-success__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+@media (max-width: 500px) {
+  .appt-card {
+    padding: 2rem 1.25rem;
+    border-radius: 18px;
+  }
+
+  .appt-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .appt-card__title {
+    font-size: 1.45rem;
+  }
+}
