@@ -33,7 +33,7 @@ coverage/
 # ===========================
 .env
 .env.*
-!.env.example
+!.env.template
 
 # ===========================
 # Editor Directories and Files
