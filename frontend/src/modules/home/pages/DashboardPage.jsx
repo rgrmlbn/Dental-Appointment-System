@@ -286,7 +286,7 @@ const STATUS_STYLES = {
   SCHEDULED: { label: "Scheduled", cls: "badge--scheduled" },
   COMPLETED: { label: "Completed", cls: "badge--completed" },
   CANCELLED: { label: "Cancelled", cls: "badge--cancelled" },
-  PENDING: { label: "Pending", cls: "badge--pending" },
+  PENDING:   { label: "Pending", cls: "badge--pending" },
 };
 
 /* ── Helpers ────────────────────────────────────────────────── */
