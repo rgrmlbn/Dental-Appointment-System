@@ -24,6 +24,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int redisPort;
 
+    @Value("${spring.data.redis.password:}")
+    private String redisPassword;
+
     // existing bean — no change
     @Bean
     public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {
@@ -37,12 +40,15 @@ public class RedisConfig {
     // new bean for bucket4j
     @Bean
     public ProxyManager<String> proxyManager() {
-        RedisClient redisClient = RedisClient.create(
-                RedisURI.builder()
-                        .withHost(redisHost)
-                        .withPort(redisPort)
-                        .build()
-        );
+        RedisURI.Builder uriBuilder = RedisURI.builder()
+                .withHost(redisHost)
+                .withPort(redisPort);
+
+        if (redisPassword != null && !redisPassword.isBlank()) {
+            uriBuilder.withPassword(redisPassword.toCharArray());
+        }
+
+        RedisClient redisClient = RedisClient.create(uriBuilder.build());
 
         StatefulRedisConnection<String, byte[]> connection = redisClient
                 .connect(RedisCodec.of(StringCodec.UTF8, ByteArrayCodec.INSTANCE));
