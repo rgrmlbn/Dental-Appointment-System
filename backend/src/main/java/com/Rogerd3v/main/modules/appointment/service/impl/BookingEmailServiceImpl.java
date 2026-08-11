@@ -1,11 +1,11 @@
 package com.Rogerd3v.main.modules.appointment.service.impl;
 
 import com.Rogerd3v.main.modules.appointment.entity.AppointmentEntity;
-import jakarta.mail.internet.MimeMessage;
+import com.resend.Resend;
+import com.resend.services.emails.model.CreateEmailOptions;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
@@ -16,9 +16,15 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 @Slf4j
 public class BookingEmailServiceImpl {
 
-    private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
+    @Value("${resend.api-key}")
+    private String resendApiKey;
+
+    @Value("${resend.from-email}")
+    private String fromEmail;
+
+    // THIS WILL NOT WORK UNLESS IF YOU HAVE YOUR OWN DOMAIN REGISTERED TO RESENDER
     @Async("emailTaskExecutor")
     public void sendBookingConfirmation(AppointmentEntity appointment) {
         try {
@@ -27,7 +33,6 @@ public class BookingEmailServiceImpl {
             String doctorName   = appointment.getDoctor().getUser().getFirstName()
                     + " " + appointment.getDoctor().getUser().getLastName();
 
-            // 1. Build the Thymeleaf context — these map to th:text="${variable}" in the template
             Context context = new Context();
             context.setVariable("patientName", patientName);
             context.setVariable("doctorName",  doctorName);
@@ -36,18 +41,18 @@ public class BookingEmailServiceImpl {
             context.setVariable("endTime",     appointment.getEndTime().toString());
             context.setVariable("services",    appointment.getServices().toString());
 
-            // 2. Render the template into an HTML string
             String htmlBody = templateEngine.process("email/booking-confirmation", context);
 
-            // 3. Build the MimeMessage (supports HTML)
-            MimeMessage mimeMessage = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            Resend resend = new Resend(resendApiKey);
 
-            helper.setTo(patientEmail);
-            helper.setSubject("Appointment Confirmed");
-            helper.setText(htmlBody, true); // true = isHtml
+            CreateEmailOptions params = CreateEmailOptions.builder()
+                    .from(fromEmail)
+                    .to(patientEmail)
+                    .subject("Appointment Confirmed")
+                    .html(htmlBody)
+                    .build();
 
-            mailSender.send(mimeMessage);
+            resend.emails().send(params);
             log.info("Booking confirmation sent to {} on thread {}",
                     patientEmail, Thread.currentThread().getName());
 

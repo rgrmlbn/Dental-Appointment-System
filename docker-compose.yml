@@ -51,7 +51,7 @@ services:
     depends_on:
       - app
     ports:
-      - "5173:80"
+      - "80:80"
     networks:
       - dental-net
 
