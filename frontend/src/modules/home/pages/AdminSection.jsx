@@ -460,8 +460,14 @@ function AdminOffDaysTab({ doctors, loading, error }) {
   const [deletingId, setDeletingId]           = useState(null);
 
   useEffect(() => {
-    if (!doctors.length) return;
+    if (!doctors.length) {
+      setOverridesMap({});
+      setOverrideLoading(false);   // stop the spinner when there's nothing to fetch
+      setOverrideError(null);
+      return;
+    }
 
+    setOverrideLoading(true);
     Promise.all(
       doctors.map((d) =>
         scheduleApi.getOverrides(d.id)

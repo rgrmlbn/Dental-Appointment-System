@@ -22,12 +22,15 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+/* ── Unwrap response.data for every call site ───────────────── */
+api.interceptors.response.use((response) => response.data);
+
 /* ── Auth API ──────────────────────────────────────────────── */
 export const authApi = {
   register: (payload) => api.post("/auth/register", payload),
 
   login: async (email, password) => {
-    const { data } = await api.post("/auth/login", { email, password });
+    const data = await api.post("/auth/login", { email, password });
     tokenStorage.setTokens(data.accessToken, data.refreshToken);
     return data;
   },
@@ -35,7 +38,7 @@ export const authApi = {
   refresh: async () => {
     const refreshToken = tokenStorage.getRefresh();
     if (!refreshToken) throw new Error("No refresh token");
-    const { data } = await api.post("/auth/refresh", { refreshToken });
+    const data = await api.post("/auth/refresh", { refreshToken });
     tokenStorage.setTokens(data.accessToken, data.refreshToken);
     return data;
   },
