@@ -1,5 +1,6 @@
 package com.Rogerd3v.main.modules.auth.service.impl;
 
+import com.Rogerd3v.main.config.LoginRateLimitProperties;
 import com.Rogerd3v.main.exception.TooManyRequestsException;
 import com.Rogerd3v.main.modules.auth.service.interfaces.LoginRateLimiterService;
 import com.Rogerd3v.main.security.util.IpExtractor;
@@ -18,6 +19,7 @@ public class LoginRateLimiterServiceImpl implements LoginRateLimiterService {
 
     private final ProxyManager<String> proxyManager;
     private final IpExtractor ipExtractor;
+    private final LoginRateLimitProperties loginRateLimitProperties;
 
     @Override
     public void checkLimits(String email) {
@@ -26,11 +28,13 @@ public class LoginRateLimiterServiceImpl implements LoginRateLimiterService {
     }
 
     private void checkEmailLimit(String email) {
-        check("rate_limit:email:" + email, 5, Duration.ofMinutes(15));
+        var cfg = loginRateLimitProperties.getEmail();
+        check("rate_limit:email:" + email, cfg.getCapacity(), Duration.ofMinutes(cfg.getRefillMinutes()));
     }
 
     private void checkIpLimit(String ip) {
-        check("rate_limit:ip:" + ip, 20, Duration.ofMinutes(15));
+        var cfg = loginRateLimitProperties.getIp();
+        check("rate_limit:ip:" + ip, cfg.getCapacity(), Duration.ofMinutes(cfg.getRefillMinutes()));
     }
 
     private void check(String key, int capacity, Duration window) {

@@ -10,6 +10,13 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 @Setter
 public class LoginRateLimitProperties {
-    private int capacity;
-    private int refillMinutes;
+    private Limit email = new Limit();
+    private Limit ip = new Limit();
+
+    @Getter
+    @Setter
+    public static class Limit {
+        private int capacity;
+        private int refillMinutes;
+    }
 }
