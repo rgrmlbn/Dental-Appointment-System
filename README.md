@@ -71,13 +71,11 @@ Open `backend/.env` and fill in your own values:
 DB_USERNAME=root
 DB_PASSWORD=your_own_db_password
 JWT_SECRET=a_long_random_string
-MAIL_USERNAME=your_gmail_address
-MAIL_PASSWORD=your_gmail_app_password
+RESEND_API_KEY=re_your_resend_api_key
+OWNER_EMAIL=your_gmail_address
 ```
 
 > `DB_PASSWORD` here should match the value you set in the root `.env` — the root file configures MySQL itself, this one tells Spring Boot what password to connect with.
-
-> Note: `MAIL_PASSWORD` must be a [Gmail App Password](https://myaccount.google.com/apppasswords), not your regular Gmail login password.
 
 ### 4. Configure frontend environment variables
 
