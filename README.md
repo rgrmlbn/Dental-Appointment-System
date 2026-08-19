@@ -148,8 +148,8 @@ Runs on [http://localhost:5173](http://localhost:5173) by default, pointing at w
 | `DB_USERNAME` | MySQL username |
 | `DB_PASSWORD` | MySQL password |
 | `JWT_SECRET` | Secret key used to sign JWT tokens |
-| `MAIL_USERNAME` | Gmail address used for sending emails |
-| `MAIL_PASSWORD` | Gmail App Password (not your regular password) |
+| `RESEND_API_KEY` | Resend API key used for sending emails |
+| `OWNER_EMAIL` | Gmail address used for receiving emails) |
 
 ### Frontend (`frontend/.env`)
 
