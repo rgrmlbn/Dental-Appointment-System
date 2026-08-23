@@ -1,4 +1,5 @@
 .footer {
+  scroll-behavior: smooth;
   background: var(--navy);
   color: rgba(255,255,255,.65);
   font-family: var(--font-body);

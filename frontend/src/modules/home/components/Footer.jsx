@@ -102,7 +102,7 @@ const Footer = () => (
 
     <div className="footer__bottom">
       <div className="footer__bottom-inner">
-        <p>© {new Date().getFullYear()} <b>DentalCare</b> @Rogerd3v. All rights reserved.</p>
+        <p>© {new Date().getFullYear()} <b>DentalCare</b> rgrmlbn. All rights reserved.</p>
         <div className="footer__legal">
           <a href="#">Privacy Policy</a>
           <a href="#">Terms of Service</a>
