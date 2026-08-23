@@ -40,9 +40,9 @@ const Footer = () => (
           {[
             { label: 'Home',             href: '#home' },
             { label: 'Services',         href: '#services' },
-            { label: 'Our Doctors',      href: '#doctors' },
-            { label: 'Book Appointment', href: '/register' },
+            { label: 'Doctors',          href: '#doctors' },
             { label: 'Patient',          href: '/register' },
+            { label: 'Book Appointment', href: '/register' },
           ].map(({ label, href }) => (
             <li key={label}><a href={href}>{label}</a></li>
           ))}
@@ -52,11 +52,22 @@ const Footer = () => (
       {/* Services */}
       <div className="footer__col">
         <h4 className="footer__col-title">Services</h4>
-        <ul className="footer__links">
-          {['Teeth Cleaning', 'Teeth Whitening', 'Dental Braces', 'General Checkup', 'Tooth Extraction', 'Dental Implants'].map(s => (
-            <li key={s}><a href="#services">{s}</a></li>
-          ))}
-        </ul>
+          <ul className="footer__links">
+            {[
+              'General Checkup',
+              'Dental Cleaning',
+              'Tooth Extraction',
+              'Braces Consultation',
+              'Root Canal Treatment',
+              'Teeth Whitening',
+              'Dental Filling',
+              'X-Ray',
+            ].map(s => (
+              <li key={s}>
+                <a href="#services">{s}</a>
+              </li>
+            ))}
+          </ul>
       </div>
 
       {/* Contact */}
