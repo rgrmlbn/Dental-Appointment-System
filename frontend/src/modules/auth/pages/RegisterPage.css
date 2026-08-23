@@ -638,3 +638,31 @@
 .register-card__footer-link:hover {
   text-decoration: underline;
 }
+
+
+@media (max-width: 600px) {
+  .register-page {
+    justify-content: flex-start;
+    padding: 4rem 1rem 2rem;
+  }
+
+  .register-page__back {
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .register-card {
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+    padding: 2rem 1.25rem;
+  }
+
+  .register-card__logo {
+    margin-bottom: 1.5rem;
+  }
+
+  .register-card__header {
+    margin-bottom: 1.5rem;
+  }
+}

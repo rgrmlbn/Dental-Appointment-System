@@ -318,3 +318,33 @@
 .login-card__footer-link:hover {
   text-decoration: underline;
 }
+
+
+/* ── Responsive ─────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .login-page {
+    justify-content: flex-start;
+    padding: 4rem 1rem 2rem;
+  }
+
+  .login-page__back {
+    top: 1rem;
+    left: 1rem;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+    padding: 2rem 1.25rem;
+  }
+
+  .login-card__logo {
+    margin-bottom: 1.5rem;
+  }
+
+  .login-card__header {
+    margin-bottom: 1.5rem;
+  }
+}

@@ -177,11 +177,11 @@ export default function LoginPage() {
         </button>
 
         {/* Divider */}
-        <div className="login-card__divider">
+        {/* <div className="login-card__divider">
           <div className="login-card__divider-line" />
           <span className="login-card__divider-text">or continue with</span>
           <div className="login-card__divider-line" />
-        </div>
+        </div> */}
 
         {/* Google */}
         {/* <button type="button" className="login-card__google">
