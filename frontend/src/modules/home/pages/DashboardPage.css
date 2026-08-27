@@ -548,7 +548,7 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #607d8b;
-  margin-bottom: 0.85rem;
+  margin: 0.85rem 0;
 }
 
 .dash-appts__grid {

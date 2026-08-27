@@ -286,7 +286,7 @@ const STATUS_STYLES = {
   SCHEDULED: { label: "Scheduled", cls: "badge--scheduled" },
   COMPLETED: { label: "Completed", cls: "badge--completed" },
   CANCELLED: { label: "Cancelled", cls: "badge--cancelled" },
-  PENDING:   { label: "Pending", cls: "badge--pending" },
+  PENDING: { label: "Pending", cls: "badge--pending" },
 };
 
 /* ── Helpers ────────────────────────────────────────────────── */
@@ -748,6 +748,18 @@ function AppointmentsSection({ userId }) {
                     />
                   ))}
                 </div>
+              </div>
+            )}
+            {upcoming.length === 0 && (
+              <div className="dash-appts__empty">
+                <CalendarIcon />
+                <p>No active appointments. Book one to get started!</p>
+                <Link to="/appointment" className="dash-hero__cta">
+                  <span>Book an Appointment</span>
+                  <span className="dash-hero__cta-arrow">
+                    <ArrowRight />
+                  </span>
+                </Link>
               </div>
             )}
             {past.length > 0 && (
@@ -1215,10 +1227,7 @@ export default function DashboardPage() {
               {" "}
               {user.firstName} {user.lastName} 👋
             </h1>
-            <p className="dash-hero__sub">
-            
-                Welcome to your DentalCare portal.
-            </p>
+            <p className="dash-hero__sub">Welcome to your DentalCare portal.</p>
           </div>
           <div className="dash-hero__illustration">
             <div className="dash-hero__tooth-bg">

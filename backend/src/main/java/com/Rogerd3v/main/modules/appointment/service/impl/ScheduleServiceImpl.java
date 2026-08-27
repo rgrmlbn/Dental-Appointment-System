@@ -81,6 +81,14 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         ownershipVerifier.verifyOwnershipOrAdmin(override.getDoctor().getUser());
 
+        List<AppointmentEntity> cancelledAppointments = appointmentRepository.findByDoctorIdAndDateAndStatus(doctorId, request.getDate(), AppointmentStatus.CANCELLED);
+
+        for(AppointmentEntity appointment : cancelledAppointments) {
+            appointment.setStatus(AppointmentStatus.SCHEDULED);
+        }
+
+        appointmentRepository.saveAll(cancelledAppointments);
+
         overrideRepository.delete(override);
     }
 
