@@ -4,8 +4,11 @@ import com.Rogerd3v.main.exception.ResourceNotFoundException;
 import com.Rogerd3v.main.modules.appointment.dto.request.CreateOverrideRequest;
 import com.Rogerd3v.main.modules.appointment.dto.response.AvailableSlotResponse;
 import com.Rogerd3v.main.modules.appointment.dto.response.OverrideResponse;
+import com.Rogerd3v.main.modules.appointment.entity.AppointmentEntity;
 import com.Rogerd3v.main.modules.appointment.entity.DoctorEntity;
 import com.Rogerd3v.main.modules.appointment.entity.DoctorScheduleOverride;
+import com.Rogerd3v.main.modules.appointment.enums.AppointmentStatus;
+import com.Rogerd3v.main.modules.appointment.repository.AppointmentRepository;
 import com.Rogerd3v.main.modules.appointment.repository.DoctorRepository;
 import com.Rogerd3v.main.modules.appointment.repository.DoctorScheduleOverrideRepository;
 import com.Rogerd3v.main.modules.appointment.service.interfaces.ScheduleService;
@@ -29,6 +32,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     private final DoctorScheduleOverrideRepository overrideRepository;
     private final DoctorRepository doctorRepository;
     private final OwnershipVerifier ownershipVerifier;
+    private final AppointmentRepository appointmentRepository;
 
     @Override
     public OverrideResponse createOverride(Long doctorId, CreateOverrideRequest request) {
@@ -40,6 +44,14 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (overrideRepository.existsByDoctorIdAndDate(doctorId, request.getDate())) {
             throw new IllegalArgumentException("Date is already blocked for this doctor");
         }
+
+        List<AppointmentEntity> affectedAppointments = appointmentRepository.findByDoctorIdAndDateAndStatus(doctorId, request.getDate(), AppointmentStatus.SCHEDULED);
+
+        for(AppointmentEntity appointment : affectedAppointments) {
+            appointment.setStatus(AppointmentStatus.CANCELLED);
+        }
+
+        appointmentRepository.saveAll(affectedAppointments);
 
         DoctorScheduleOverride override = DoctorScheduleOverride.builder()
                 .doctor(doctor)

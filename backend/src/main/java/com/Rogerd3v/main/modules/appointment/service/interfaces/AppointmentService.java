@@ -14,9 +14,10 @@ public interface AppointmentService {
     AppointmentResponse getAppointmentById(Long id);
     List<AppointmentSummaryResponse> getAppointmentsByDoctor(Long doctorId);
     List<AppointmentSummaryResponse> getAppointmentsByPatient(Long patientId);
+//    List<>
     AppointmentResponse updateAppointment(Long id, UpdateAppointmentRequest request);
     AppointmentResponse cancelAppointment(Long id);
     AppointmentResponse updateAppointmentStatus(Long id, AppointmentStatusRequest request);
-    AppointmentResponse deleteAppointment(Long id);
+    void deleteAppointment(Long id);
 
 }

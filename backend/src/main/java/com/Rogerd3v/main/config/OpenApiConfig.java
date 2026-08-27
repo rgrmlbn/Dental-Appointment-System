@@ -20,7 +20,7 @@ public class OpenApiConfig {
                         .description("REST API documentation")
                         .version("1.0.0")
                         .contact(new Contact()
-                                .name("Rogerd3v")
+                                .name("rgrmlbn")
                                 .email("rogerabarico21@email.com")
                         )
                 )

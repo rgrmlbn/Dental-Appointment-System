@@ -162,14 +162,14 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponse deleteAppointment(Long id) {
+    public void deleteAppointment(Long id) {
         AppointmentEntity appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment"));
 
         ownershipVerifier.verifyOwnershipOrAdmin(appointment.getPatient());
 
         appointmentRepository.delete(appointment);
-        return appointmentMapper.toResponse(appointment);
+        appointmentMapper.toResponse(appointment);
     }
 
 }
