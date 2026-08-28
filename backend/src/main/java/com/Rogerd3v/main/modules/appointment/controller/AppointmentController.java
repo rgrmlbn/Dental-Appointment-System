@@ -59,6 +59,12 @@ public class AppointmentController {
         return ResponseEntity.ok(appointmentService.updateAppointmentStatus(id, update));
     }
 
+    @PatchMapping("/{id}/complete")
+    ResponseEntity<AppointmentResponse> completeAppointmentStatusById(@PathVariable @Positive Long id) {
+
+        return ResponseEntity.ok(appointmentService.completeAppointment(id));
+    }
+
     @PatchMapping("/{id}/cancel")
     ResponseEntity<AppointmentResponse> cancelAppointmentById(@PathVariable @Positive Long id) {
 

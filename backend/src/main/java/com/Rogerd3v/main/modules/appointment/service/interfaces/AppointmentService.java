@@ -5,6 +5,7 @@ import com.Rogerd3v.main.modules.appointment.dto.request.CreateAppointmentReques
 import com.Rogerd3v.main.modules.appointment.dto.request.UpdateAppointmentRequest;
 import com.Rogerd3v.main.modules.appointment.dto.response.AppointmentResponse;
 import com.Rogerd3v.main.modules.appointment.dto.response.AppointmentSummaryResponse;
+import org.hibernate.sql.Update;
 
 
 import java.util.List;
@@ -14,7 +15,7 @@ public interface AppointmentService {
     AppointmentResponse getAppointmentById(Long id);
     List<AppointmentSummaryResponse> getAppointmentsByDoctor(Long doctorId);
     List<AppointmentSummaryResponse> getAppointmentsByPatient(Long patientId);
-//    List<>
+    AppointmentResponse completeAppointment(Long id);
     AppointmentResponse updateAppointment(Long id, UpdateAppointmentRequest request);
     AppointmentResponse cancelAppointment(Long id);
     AppointmentResponse updateAppointmentStatus(Long id, AppointmentStatusRequest request);

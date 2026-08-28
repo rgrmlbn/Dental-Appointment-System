@@ -57,9 +57,10 @@ public class SecurityConfig {
 //                                "/swagger-resources/**",
 //                                "/webjars/**"
 //                        ).permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN") // 👈 only list all users is ADMIN
+//                        .requestMatchers(HttpMethod.GET, "/api/doctors").permitAll()                // 👈 allow all
+//                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")             // 👈 only list all users is ADMIN
 //                        .requestMatchers(HttpMethod.POST, "/api/doctors/register").hasRole("ADMIN") // 👈 only ADMIN can register doctors
-//                        .anyRequest().authenticated()                                 // 👈 everything else just needs to be logged in
+//                        .anyRequest().authenticated()                                                         // 👈 everything else just needs to be logged in
 //                )
 
                 .exceptionHandling(ex -> ex

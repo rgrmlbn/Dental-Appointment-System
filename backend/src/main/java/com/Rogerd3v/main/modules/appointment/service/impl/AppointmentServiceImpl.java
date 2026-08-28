@@ -21,6 +21,8 @@ import com.Rogerd3v.main.modules.user.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -43,11 +45,23 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<AvailableSlotResponse> availableSlots = scheduleService
                 .getAvailableSlots(request.getDoctorId(), request.getDate());
 
+        LocalTime now = LocalTime.now();
+        LocalDate today = LocalDate.now();
+
+        if (today.isAfter(request.getDate())) {
+            throw new IllegalStateException("The selected date has already passed");
+        }
+
         boolean slotExists = availableSlots.stream()
                 .anyMatch(slot -> slot.getStartTime().equals(request.getStartTime()));
 
         if (!slotExists) {
             throw new SlotUnavailableException("Slot is not available");
+        }
+
+        if (request.getDate().equals(today)
+                && !now.isBefore(request.getStartTime())) {
+            throw new IllegalStateException("The selected time slot has already passed");
         }
 
         if (appointmentRepository.existsByDoctorIdAndDateAndStartTimeAndStatus(
@@ -132,6 +146,37 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         appointmentRepository.save(appointment);
         return appointmentMapper.toResponse(appointment);
+    }
+
+    @Override
+    public AppointmentResponse completeAppointment(Long id) {
+
+        AppointmentEntity appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment"));
+
+        ownershipVerifier.verifyOwnershipOrAdmin(appointment.getDoctor().getUser());
+
+        if(appointment.getStatus() != AppointmentStatus.SCHEDULED){
+            throw new IllegalStateException("Only scheduled appointment can be completed");
+        }
+
+        LocalDate today = LocalDate.now();
+        LocalTime now = LocalTime.now();
+
+        if(!appointment.getDate().equals(today)){
+            throw new IllegalStateException("Only appointment scheduled for today can be completed");
+        }
+
+        if(now.isBefore(appointment.getStartTime())){
+            throw new IllegalStateException("Appointment cannot be completed before its scheduled time");
+        }
+
+        appointment.setStatus(AppointmentStatus.COMPLETED);
+
+        appointmentRepository.save(appointment);
+
+        return appointmentMapper.toResponse(appointment);
+
     }
 
     @Override
