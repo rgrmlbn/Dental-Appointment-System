@@ -41,27 +41,27 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
 
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll()
-                )
+    //                .authorizeHttpRequests(auth -> auth
+    //                        .anyRequest().permitAll()
+    //                )
 
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers(
-//                                "/api/auth/register",
-//                                "/api/auth/login",
-//                                "/api/auth/refresh",
-//                                "/v3/api-docs/**",
-//                                "/v3/api-docs.yaml",
-//                                "/swagger-ui/**",
-//                                "/swagger-ui.html",
-//                                "/swagger-resources/**",
-//                                "/webjars/**"
-//                        ).permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/api/doctors").permitAll()                // 👈 allow all
-//                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")             // 👈 only list all users is ADMIN
-//                        .requestMatchers(HttpMethod.POST, "/api/doctors/register").hasRole("ADMIN") // 👈 only ADMIN can register doctors
-//                        .anyRequest().authenticated()                                                         // 👈 everything else just needs to be logged in
-//                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/refresh",
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/swagger-resources/**",
+                                "/webjars/**"
+                        ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/doctors").permitAll()                // 👈 allow all
+                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")             // 👈 only list all users is ADMIN
+                        .requestMatchers(HttpMethod.POST, "/api/doctors/register").hasRole("ADMIN") // 👈 only ADMIN can register doctors
+                        .anyRequest().authenticated()                                                         // 👈 everything else just needs to be logged in
+                )
 
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authEntryPoint)
