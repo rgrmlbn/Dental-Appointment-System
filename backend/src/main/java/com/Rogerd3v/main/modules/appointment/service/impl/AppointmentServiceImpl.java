@@ -214,7 +214,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         ownershipVerifier.verifyOwnershipOrAdmin(appointment.getPatient());
 
         appointmentRepository.delete(appointment);
-        appointmentMapper.toResponse(appointment);
     }
 
 }

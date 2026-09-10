@@ -67,7 +67,7 @@ const CTASection = () => (
               <div className="cta__vc-step-icon">✓</div>
               <div>
                 <div className="cta__vc-step-label">Select Doctor</div>
-                <div className="cta__vc-step-val">Dr. Maria Santos</div>
+                <div className="cta__vc-step-val">Dr. Roger Malabanan</div>
               </div>
             </div>
             <div className="cta__vc-step cta__vc-step--active">
