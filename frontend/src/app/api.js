@@ -22,8 +22,59 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-/* ── Unwrap response.data for every call site ───────────────── */
-api.interceptors.response.use((response) => response.data);
+/* ── Auto-refresh on 401, then unwrap response.data ──────────
+   Both success and error paths live in ONE interceptor now,
+   since having two separate .use() calls made the error path
+   messy (the second .use() would never see errors from the first).
+────────────────────────────────────────────────────────────── */
+let isRefreshing = false;
+let refreshQueue = []; // holds { resolve, reject } for requests waiting on an in-flight refresh
+
+api.interceptors.response.use(
+  (response) => response.data, // unwrap on success, same as before
+
+  async (error) => {
+    const originalRequest = error.config;
+    const status = error.response?.status;
+    const isRefreshCall = originalRequest?.url?.includes("/auth/refresh");
+
+    // Only attempt recovery for 401s, on requests we haven't already retried,
+    // and never for the refresh call itself (that would loop forever).
+    if (status === 401 && !originalRequest._retry && !isRefreshCall) {
+      originalRequest._retry = true;
+
+      if (isRefreshing) {
+        // A refresh is already in flight — wait for it instead of firing another.
+        return new Promise((resolve, reject) => {
+          refreshQueue.push({ resolve, reject });
+        }).then((newAccessToken) => {
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return api(originalRequest);
+        });
+      }
+
+      isRefreshing = true;
+
+      try {
+        const data = await authApi.refresh(); // reuses your existing authApi.refresh()
+        refreshQueue.forEach(({ resolve }) => resolve(data.accessToken));
+        refreshQueue = [];
+
+        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        return api(originalRequest); // retry the original failed request
+      } catch (refreshError) {
+        refreshQueue.forEach(({ reject }) => reject(refreshError));
+        refreshQueue = [];
+        tokenStorage.clear(); // only clear everything if refresh ITSELF failed
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 /* ── Auth API ──────────────────────────────────────────────── */
 export const authApi = {
