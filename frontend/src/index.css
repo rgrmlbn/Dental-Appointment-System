@@ -1,6 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
+.page-transition-content--loading,
+.page-transition-content--loading * {
+  animation-play-state: paused !important;
+}
+
 @theme {
   --color-navy: #0b2447;
   --color-blue: #1565c0;
@@ -86,45 +91,4 @@ textarea[aria-invalid="true"]:focus {
 .doc-tab--active:hover {
   color: #0b2447;
   border-bottom-color: #1565c0;
-}
-
-.page-loader {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  display: grid;
-  place-items: center;
-  padding: 1rem;
-  background: linear-gradient(155deg, #0b2447 0%, #1565c0 55%, #1e88e5 100%);
-  color: #fff;
-  font-family: var(--font-body);
-}
-
-.page-loader__card {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  padding: 1rem 1.35rem;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.12);
-  box-shadow: 0 12px 40px rgba(11, 36, 71, 0.18);
-  font-size: 0.92rem;
-  font-weight: 500;
-}
-
-.page-loader__spinner {
-  width: 21px;
-  height: 21px;
-  flex: 0 0 auto;
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  border-top-color: #fff;
-  border-radius: 50%;
-  animation: page-loader-spin 0.75s linear infinite;
-}
-
-@keyframes page-loader-spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
