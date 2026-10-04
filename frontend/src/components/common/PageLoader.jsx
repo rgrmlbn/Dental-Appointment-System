@@ -1,7 +1,7 @@
-export default function PageLoader({ overlay = false }) {
+export default function PageLoader() {
   return (
     <div
-      className={`page-loader${overlay ? " page-loader--overlay" : ""}`}
+      className="page-loader"
       role="status"
       aria-live="polite"
     >

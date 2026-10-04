@@ -100,11 +100,6 @@ textarea[aria-invalid="true"]:focus {
   font-family: var(--font-body);
 }
 
-.page-loader--overlay {
-  background: rgba(11, 36, 71, 0.58);
-  backdrop-filter: blur(5px);
-}
-
 .page-loader__card {
   display: flex;
   align-items: center;
