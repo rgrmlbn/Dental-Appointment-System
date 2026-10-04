@@ -706,11 +706,11 @@ export default function AdminSection() {
 
   return (
     <>
-      <div className="doc-section [background:#fff] [border-radius:22px] [box-shadow:0_24px_80px_rgba(11,_36,_71,_0.22)] [overflow:hidden] [scroll-margin-top:80px]">
-        {/* ── Tab bar ── */}
-        <div className="doc-tabs [display:flex] [border-bottom:1px_solid_#e3eaf5] [padding:0_2rem] [gap:0] max-[640px]:[padding:0_1.25rem] max-[640px]:[gap:0]">
+      {/* ── Tab bar ── */}
+      <div className="doc-tabs [display:flex] [gap:0.5rem] [flex-wrap:wrap] max-[640px]:[gap:0.4rem]">
           <button
-            className={`doc-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:1rem_0.25rem] [margin-right:1.75rem] [background:transparent] [border:none] [border-bottom:2.5px_solid_transparent] [font-family:DM_Sans,_sans-serif] [font-size:0.88rem] [font-weight:600] [color:#90a4ae] [cursor:pointer] [transition:color_0.15s,_border-color_0.15s] [position:relative] [top:1px] hover:[color:#455a64] max-[640px]:[font-size:0.82rem] max-[640px]:[margin-right:1.25rem]${tab === "appointments" ? " doc-tab--active" : ""}`}
+            className={`doc-tab${tab === "appointments" ? " doc-tab--active" : ""}`}
+            aria-pressed={tab === "appointments"}
             onClick={() => setTab("appointments")}
           >
             <CalendarIcon />
@@ -721,7 +721,8 @@ export default function AdminSection() {
           </button>
 
           <button
-            className={`doc-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:1rem_0.25rem] [margin-right:1.75rem] [background:transparent] [border:none] [border-bottom:2.5px_solid_transparent] [font-family:DM_Sans,_sans-serif] [font-size:0.88rem] [font-weight:600] [color:#90a4ae] [cursor:pointer] [transition:color_0.15s,_border-color_0.15s] [position:relative] [top:1px] hover:[color:#455a64] max-[640px]:[font-size:0.82rem] max-[640px]:[margin-right:1.25rem]${tab === "users" ? " doc-tab--active" : ""}`}
+            className={`doc-tab${tab === "users" ? " doc-tab--active" : ""}`}
+            aria-pressed={tab === "users"}
             onClick={() => setTab("users")}
           >
             <UsersIcon />
@@ -732,14 +733,16 @@ export default function AdminSection() {
           </button>
 
           <button
-            className={`doc-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:1rem_0.25rem] [margin-right:1.75rem] [background:transparent] [border:none] [border-bottom:2.5px_solid_transparent] [font-family:DM_Sans,_sans-serif] [font-size:0.88rem] [font-weight:600] [color:#90a4ae] [cursor:pointer] [transition:color_0.15s,_border-color_0.15s] [position:relative] [top:1px] hover:[color:#455a64] max-[640px]:[font-size:0.82rem] max-[640px]:[margin-right:1.25rem]${tab === "offdays" ? " doc-tab--active" : ""}`}
+            className={`doc-tab${tab === "offdays" ? " doc-tab--active" : ""}`}
+            aria-pressed={tab === "offdays"}
             onClick={() => setTab("offdays")}
           >
             <BanIcon />
             Off Days
           </button>
-        </div>
+      </div>
 
+      <div className="doc-section [background:#fff] [border-radius:22px] [box-shadow:0_24px_80px_rgba(11,_36,_71,_0.22)] [overflow:hidden] [scroll-margin-top:80px]">
         {/* ── Panels ── */}
         <div className="doc-panel [padding:1.75rem_2.5rem_2.25rem] max-[640px]:[padding:1.5rem_1.25rem_2rem]">
           {tab === "appointments" && (

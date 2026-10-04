@@ -988,10 +988,10 @@ function DoctorSection() {
   return (
     <>
       {/* ── Tab bar ── */}
-      <div className="doc-section [background:#fff] [border-radius:22px] [box-shadow:0_24px_80px_rgba(11,_36,_71,_0.22)] [overflow:hidden] [scroll-margin-top:80px]">
-        <div className="doc-tabs [display:flex] [border-bottom:1px_solid_#e3eaf5] [padding:0_2rem] [gap:0] max-[640px]:[padding:0_1.25rem] max-[640px]:[gap:0]">
+      <div className="doc-tabs [display:flex] [gap:0.5rem] [flex-wrap:wrap] max-[640px]:[gap:0.4rem]">
           <button
-            className={`doc-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:1rem_0.25rem] [margin-right:1.75rem] [background:transparent] [border:none] [border-bottom:2.5px_solid_transparent] [font-family:DM_Sans,_sans-serif] [font-size:0.88rem] [font-weight:600] [color:#90a4ae] [cursor:pointer] [transition:color_0.15s,_border-color_0.15s] [position:relative] [top:1px] hover:[color:#455a64] max-[640px]:[font-size:0.82rem] max-[640px]:[margin-right:1.25rem]${tab === "appointments" ? " doc-tab--active" : ""}`}
+            className={`doc-tab${tab === "appointments" ? " doc-tab--active" : ""}`}
+            aria-pressed={tab === "appointments"}
             onClick={() => setTab("appointments")}
           >
             <UserGroupIcon />
@@ -1001,7 +1001,8 @@ function DoctorSection() {
             )}
           </button>
           <button
-            className={`doc-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:1rem_0.25rem] [margin-right:1.75rem] [background:transparent] [border:none] [border-bottom:2.5px_solid_transparent] [font-family:DM_Sans,_sans-serif] [font-size:0.88rem] [font-weight:600] [color:#90a4ae] [cursor:pointer] [transition:color_0.15s,_border-color_0.15s] [position:relative] [top:1px] hover:[color:#455a64] max-[640px]:[font-size:0.82rem] max-[640px]:[margin-right:1.25rem]${tab === "offdays" ? " doc-tab--active" : ""}`}
+            className={`doc-tab${tab === "offdays" ? " doc-tab--active" : ""}`}
+            aria-pressed={tab === "offdays"}
             onClick={() => setTab("offdays")}
           >
             <BanIcon />
@@ -1012,8 +1013,9 @@ function DoctorSection() {
               </span>
             )}
           </button>
-        </div>
+      </div>
 
+      <div className="doc-section [background:#fff] [border-radius:22px] [box-shadow:0_24px_80px_rgba(11,_36,_71,_0.22)] [overflow:hidden] [scroll-margin-top:80px]">
         {/* ── Appointments tab ── */}
         {tab === "appointments" && (
           <div className="doc-panel [padding:1.75rem_2.5rem_2.25rem] max-[640px]:[padding:1.5rem_1.25rem_2rem]">
@@ -1198,8 +1200,9 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="dash-page min-h-screen flex flex-col relative overflow-x-hidden font-body [background:linear-gradient(155deg,_#0b2447_0%,_#1565c0_55%,_#1e88e5_100%)]">
-      <div className="dash-page__glow-1 [position:absolute] [inset:0] [pointer-events:none] [background:radial-gradient(_ellipse_60%_50%_at_30%_60%,_rgba(30,_136,_229,_0.2)_0%,_transparent_70%_)] [z-index:0]" />
+    <div className="dash-page min-h-screen flex flex-col relative overflow-x-hidden font-body">
+      <div className="dash-page__bg [position:fixed] [inset:0] [z-index:0] [pointer-events:none] [background-image:linear-gradient(155deg,#0b2447_0%,#1565c0_55%,#1e88e5_100%)]" />
+      <div className="dash-page__glow-1 [position:fixed] [inset:0] [pointer-events:none] [background:radial-gradient(_ellipse_60%_50%_at_30%_60%,_rgba(30,_136,_229,_0.2)_0%,_transparent_70%_)] [z-index:0]" />
       <div className="dash-page__glow-2 [position:absolute] [top:-100px] [right:-100px] [width:420px] [height:420px] [border-radius:50%] [background:rgba(255,_255,_255,_0.04)] [pointer-events:none] [z-index:0]" />
 
       {/* ── Nav ── */}
@@ -1286,4 +1289,5 @@ export default function DashboardPage() {
       </main>
     </div>
   );
+
 }

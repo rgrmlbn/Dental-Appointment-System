@@ -341,9 +341,11 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="pf-page min-h-screen flex flex-col relative overflow-x-hidden font-body [background:linear-gradient(155deg,_#0b2447_0%,_#1565c0_55%,_#1e88e5_100%)]">
-      <div className="pf-page__glow-1 [position:absolute] [inset:0] [pointer-events:none] [background:radial-gradient(ellipse_60%_50%_at_30%_60%,_rgba(30,136,229,0.2)_0%,_transparent_70%)] [z-index:0]" />
-      <div className="pf-page__glow-2 [position:absolute] [top:-100px] [right:-100px] [width:420px] [height:420px] [border-radius:50%] [background:rgba(255,255,255,0.04)] [pointer-events:none] [z-index:0]" />
+  <div className="pf-page min-h-screen flex flex-col relative overflow-x-hidden font-body">
+    <div className="pf-page__bg [position:fixed] [inset:0] [z-index:0] [pointer-events:none] [background-image:linear-gradient(155deg,#0b2447_0%,#1565c0_55%,#1e88e5_100%)]" />
+    <div className="pf-page__glow-1 ..." />
+    <div className="pf-page__glow-2 ..." />
+    
 
       <main className="pf-main [position:relative] [z-index:1] [flex:1] [max-width:780px] [width:100%] [margin:0_auto] [padding:2rem_1.5rem_5rem] [display:flex] [flex-direction:column] [gap:1.25rem] max-[640px]:[padding:1.5rem_1rem_4rem]">
         {/* Back */}
@@ -369,7 +371,15 @@ export default function ProfilePage() {
           ].map(t => (
             <button
               key={t.key}
-              className={`pf-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:0.6rem_1.1rem] [border-radius:50px] [border:1.5px_solid_rgba(255,255,255,0.25)] [background:rgba(255,255,255,0.1)] [color:rgba(255,255,255,0.75)] [font-family:DM_Sans,_sans-serif] [font-size:0.86rem] [font-weight:500] [cursor:pointer] [transition:background_0.18s,_border-color_0.18s,_color_0.18s] [backdrop-filter:blur(6px)] hover:[background:rgba(255,255,255,0.18)] hover:[color:#fff] max-[640px]:[font-size:0.8rem] max-[640px]:[padding:0.5rem_0.85rem]${tab === t.key ? " pf-tab--active [background:#fff] [color:#0b2447] [border-color:#fff] [font-weight:600] [&.pf-tab--danger.pf-tab--active]:[background:#fff1f1] [&.pf-tab--danger.pf-tab--active]:[color:#c62828] [&.pf-tab--danger.pf-tab--active]:[border-color:#ffcdd2]" : ""}${t.danger ? " pf-tab--danger [color:rgba(255,120,120,0.85)] [border-color:rgba(255,100,100,0.3)] hover:[background:rgba(255,80,80,0.12)] hover:[color:#ff6b6b]" : ""}`}
+              className={`pf-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:0.6rem_1.1rem] [border-radius:50px] [border:1.5px_solid_rgba(255,255,255,0.25)] [background:rgba(255,255,255,0.1)] [color:rgba(255,255,255,0.75)] [font-family:DM_Sans,_sans-serif] [font-size:0.86rem] [font-weight:500] [cursor:pointer] [transition:border-color_0.18s,_color_0.18s,_box-shadow_0.18s] [backdrop-filter:blur(6px)] hover:[color:#fff] focus-visible:[outline:2px_solid_#fff] focus-visible:[outline-offset:3px] max-[640px]:[font-size:0.8rem] max-[640px]:[padding:0.5rem_0.85rem]${tab === t.key ? " pf-tab--active" : ""}${t.danger ? " pf-tab--danger [color:rgba(255,120,120,0.85)] [border-color:rgba(255,100,100,0.3)] hover:[color:#ffb3b3]" : ""}`}
+              style={tab === t.key ? {
+                background: "rgba(255,255,255,0.1)",
+                color: t.danger ? "#ffd1d1" : "#fff",
+                borderColor: t.danger ? "#ffcdd2" : "#fff",
+                fontWeight: 600,
+                boxShadow: `0 0 0 2px ${t.danger ? "rgba(255,205,210,0.45)" : "rgba(255,255,255,0.35)"}`,
+              } : undefined}
+              aria-pressed={tab === t.key}
               onClick={() => setTab(t.key)}
             >
               {t.icon} {t.label}

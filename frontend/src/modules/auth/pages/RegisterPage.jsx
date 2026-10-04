@@ -243,7 +243,6 @@ const Step3 = ({ data, errors, registerField }) => {
             className={`box-border min-w-0 flex-1 rounded-r-lg border-[1.5px] border-[rgba(21,101,192,0.18)] bg-[rgba(227,242,253,0.3)] px-[0.9rem] py-[0.65rem] text-[0.9rem] text-[#0B2447] outline-none transition-[border-color,box-shadow,background-color] duration-200 [font-family:inherit] focus:border-[#1565C0] focus:bg-white focus:shadow-[0_0_0_3px_rgba(21,101,192,0.1)] ${errors.contactNumber ? "border-[#E53935] bg-[rgba(229,57,53,0.04)]" : ""}`}
           />
         </div>
-        {errors.contactNumber && <span className="text-[0.73rem] font-medium text-[#E53935]">{errors.contactNumber}</span>}
       </Field>
 
       <Field label="Email Address" required error={errors.email} full>
