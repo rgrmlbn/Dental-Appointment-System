@@ -26,9 +26,11 @@ export default function PageLoader() {
         </p>
         <div
           className="h-[3px] w-full max-w-[208px] overflow-hidden rounded-full bg-white/20"
-          aria-hidden="true"
+          role="progressbar"
+          aria-label="Loading page"
+          aria-valuetext="Loading"
         >
-          <span className="block h-full w-[42%] rounded-full bg-[linear-gradient(90deg,#90caf9,#fff,#80deea)] shadow-[0_0_12px_rgba(255,255,255,0.65)] motion-safe:animate-pulse" />
+          <span className="page-loader-progress block h-full w-[42%] rounded-full bg-[linear-gradient(90deg,#90caf9,#fff,#80deea)] shadow-[0_0_12px_rgba(255,255,255,0.65)]" />
         </div>
       </div>
       <span className="absolute bottom-9 z-10 max-w-[calc(100%-2rem)] text-center text-[0.6rem] font-semibold tracking-[0.19em] text-[#e8f2ff]/50 max-[480px]:bottom-5 max-[480px]:leading-relaxed">

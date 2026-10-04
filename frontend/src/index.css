@@ -6,6 +6,15 @@
   animation-play-state: paused !important;
 }
 
+@keyframes page-loader-progress {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(240%); }
+}
+
+.page-loader-progress {
+  animation: page-loader-progress 1.2s ease-in-out infinite;
+}
+
 @theme {
   --color-navy: #0b2447;
   --color-blue: #1565c0;
