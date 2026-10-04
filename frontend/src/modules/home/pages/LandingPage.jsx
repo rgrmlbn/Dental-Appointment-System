@@ -3,11 +3,9 @@ import ServicesSection from '../components/ServicesSection.jsx';
 import DoctorsPreview from '../components/DoctorsPreview.jsx';
 import CTASection from '../components/CTASection.jsx';
 import Footer from '../components/Footer.jsx';
-import './LandingPage.css';
-
 const LandingPage = () => {
   return (
-    <div className="landing-page">
+    <div className="landing-page [font-family:var(--font-body)] [color:#1A2F4E] [background:#fff] [overflow-x:hidden]">
       <HeroSection />
       <ServicesSection />
       <DoctorsPreview />

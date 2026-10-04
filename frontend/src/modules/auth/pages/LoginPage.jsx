@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { useAuth } from "../useAuth.js";
-// (adjust relative path based on each file's location)
-import "./LoginPage.css";
 
 /* ── Icons ──────────────────────────────────────────────────── */
 const EyeIcon = ({ open }) =>
@@ -36,29 +35,33 @@ const ArrowLeft = () => (
 );
 
 /* ── Input ──────────────────────────────────────────────────── */
-const InputField = ({ label, type = "text", placeholder, value, onChange, error, icon, hasToggle, showPass, onToggle }) => (
-  <div className="input-field">
-    <label className="input-field__label">{label}</label>
-    <div className="input-field__wrapper">
-      {icon && <span className="input-field__icon">{icon}</span>}
+const InputField = ({ label, type = "text", placeholder, name, value, onChange, onBlur, ref, error, icon, hasToggle, showPass, onToggle }) => (
+  <div className="flex flex-col gap-[5px]">
+    <label className="text-[0.8rem] font-semibold text-[#0B2447] tracking-[0.01em]">{label}</label>
+    <div className="relative flex items-center">
+      {icon && <span className="absolute left-[13px] flex items-center text-[rgba(21,101,192,0.45)]">{icon}</span>}
       <input
         type={hasToggle ? (showPass ? "text" : "password") : type}
+        name={name}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
+        ref={ref}
+        aria-invalid={Boolean(error)}
         className={[
-          "input-field__input",
-          !icon ? "input-field__input--no-icon" : "",
-          error ? "input-field__input--error" : "",
+          "box-border w-full rounded-[9px] border-[1.5px] border-[rgba(21,101,192,0.18)] bg-[rgba(227,242,253,0.3)] py-[0.7rem] pr-[2.6rem] pl-10 text-[0.93rem] text-[#0B2447] outline-none transition-[border-color,box-shadow,background-color] duration-200 [font-family:inherit] focus:border-[#1565C0] focus:bg-white focus:shadow-[0_0_0_3px_rgba(21,101,192,0.11)]",
+          !icon ? "pl-4" : "",
+          error ? "border-[#E53935] bg-[rgba(229,57,53,0.04)]" : "",
         ].join(" ")}
       />
       {hasToggle && (
-        <button type="button" onClick={onToggle} className="input-field__toggle">
+        <button type="button" onClick={onToggle} className="absolute right-[13px] flex cursor-pointer items-center border-0 bg-transparent p-0 text-[rgba(11,36,71,0.4)] transition-colors duration-200 hover:text-[#1565C0]">
           <EyeIcon open={showPass} />
         </button>
       )}
     </div>
-    {error && <span className="input-field__error">{error}</span>}
+    {error && <span className="text-[0.75rem] font-medium text-[#E53935]">{error}</span>}
   </div>
 );
 
@@ -67,26 +70,20 @@ export default function LoginPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [email, setEmail]       = useState("");
-  const [pass, setPass]         = useState("");
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: { email: "", pass: "" },
+  });
   const [showPass, setShowPass] = useState(false);
-  const [errors, setErrors]     = useState({});
   const [apiError, setApiError] = useState("");
   const [loading, setLoading]   = useState(false);
 
-  const validate = () => {
-    const e = {};
-    if (!email) e.email = "Email is required";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = "Enter a valid email";
-    if (!pass) e.pass = "Password is required";
-    return e;
-  };
-
-  const handleSubmit = async () => {
-    const e = validate();
-    if (Object.keys(e).length) { setErrors(e); return; }
-
-    setErrors({});
+  const handleLogin = async ({ email, pass }) => {
     setApiError("");
     setLoading(true);
 
@@ -100,81 +97,78 @@ export default function LoginPage() {
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter") handleSubmit();
-  };
-
   return (
-    <div className="login-page">
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[linear-gradient(155deg,#0B2447_0%,#1565C0_55%,#1E88E5_100%)] p-8 [font-family:DM_Sans,sans-serif] max-[600px]:justify-start max-[600px]:px-4 max-[600px]:pt-16 max-[600px]:pb-8">
       {/* bg glows */}
-      <div className="login-page__glow-1" />
-      <div className="login-page__glow-2" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_30%_60%,rgba(30,136,229,0.2)_0%,transparent_70%)]" />
+      <div className="pointer-events-none absolute -top-20 -right-20 h-[340px] w-[340px] rounded-full bg-[rgba(255,255,255,0.04)]" />
 
       {/* Back to home */}
-      <div className="login-page__back">
-        <Link to="/" className="login-page__back-link">
+      <div className="absolute top-6 left-7 z-10 max-[600px]:top-4 max-[600px]:left-4">
+        <Link to="/" className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-[rgba(255,255,255,0.4)] bg-[rgba(255,255,255,0.08)] px-[0.9rem] py-[0.45rem] text-[0.85rem] font-medium text-[rgba(255,255,255,0.9)] no-underline backdrop-blur-[8px] transition-[background,border-color] duration-200 hover:border-[rgba(255,255,255,0.7)] hover:bg-[rgba(255,255,255,0.08)]">
           <ArrowLeft /> Back to home
         </Link>
       </div>
 
       {/* Card */}
-      <div className="login-card">
+      <div className="relative z-[1] w-full max-w-[420px] rounded-[22px] border border-[rgba(255,255,255,0.08)] bg-white px-9 py-10 shadow-[0_24px_80px_rgba(11,36,71,0.25)] max-[600px]:box-border max-[600px]:px-5 max-[600px]:py-8">
         {/* Logo */}
-        <div className="login-card__logo">
-          <img src="/logo.png" alt="DentalCare Logo" className="login-card__logo-img" />
+        <div className="mb-8 flex items-center justify-center rounded-[14px] bg-[linear-gradient(135deg,#0B2447_0%,#1565C0_100%)] px-6 py-[0.85rem] shadow-[0_4px_18px_rgba(21,101,192,0.38)] max-[600px]:mb-6">
+          <img src="/logo.png" alt="DentalCare Logo" className="block h-[42px] w-auto object-contain" />
         </div>
 
         {/* Header */}
-        <div className="login-card__header">
-          <h1 className="login-card__title">Welcome back</h1>
-          <p className="login-card__subtitle">Sign in to manage your appointments</p>
+        <div className="mb-7 max-[600px]:mb-6">
+          <h1 className="m-0 mb-[0.4rem] text-[1.9rem] leading-[1.15] font-bold tracking-[-0.02em] text-[#0B2447] [font-family:Fraunces,serif]">Welcome back</h1>
+          <p className="m-0 text-[0.88rem] font-light text-[#607D8B]">Sign in to manage your appointments</p>
         </div>
 
         {/* API error banner */}
         {apiError && (
-          <div className="login-card__api-error">
+          <div className="mb-1 rounded-lg border border-[#ffa39e] bg-[#fff1f0] px-[14px] py-[10px] text-[0.85rem] text-[#cf1322]">
             {apiError}
           </div>
         )}
 
         {/* Fields */}
-        <div className="login-card__fields">
-          <InputField
-            label="Email Address"
-            type="email"
-            placeholder="you@email.com"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            error={errors.email}
-            icon={<MailIcon />}
-          />
-          <InputField
-            label="Password"
-            placeholder="Enter your password"
-            value={pass}
-            onChange={e => setPass(e.target.value)}
-            error={errors.pass}
-            icon={<LockIcon />}
-            hasToggle
-            showPass={showPass}
-            onToggle={() => setShowPass(v => !v)}
-          />
-        </div>
+        <form onSubmit={handleSubmit(handleLogin)} noValidate>
+          <div className="flex flex-col gap-[1.1rem]">
+            <InputField
+              label="Email Address"
+              type="email"
+              placeholder="you@email.com"
+              {...register("email", {
+                required: "Email is required",
+                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email" },
+              })}
+              error={errors.email?.message}
+              icon={<MailIcon />}
+            />
+            <InputField
+              label="Password"
+              placeholder="Enter your password"
+              {...register("pass", { required: "Password is required" })}
+              error={errors.pass?.message}
+              icon={<LockIcon />}
+              hasToggle
+              showPass={showPass}
+              onToggle={() => setShowPass(v => !v)}
+            />
+          </div>
 
-        <div className="login-card__forgot">
-          <a href="#" className="login-card__forgot-link">Forgot password?</a>
+        <div className="mt-3 flex justify-end">
+          <a href="#" className="text-[0.8rem] font-semibold text-[#1565C0] no-underline hover:underline">Forgot password?</a>
         </div>
 
         {/* CTA */}
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={loading}
-          className="login-card__submit"
-          onKeyDown={handleKeyDown}
-        >
-          {loading ? "Signing in…" : "Sign In"}
-        </button>
+          <button
+            type="submit"
+            disabled={loading}
+            className="mt-5 w-full cursor-pointer rounded-[10px] border-0 bg-[linear-gradient(135deg,#0B2447_0%,#1565C0_100%)] p-[0.85rem] text-[0.97rem] font-semibold tracking-[0.01em] text-white shadow-[0_4px_18px_rgba(21,101,192,0.38)] transition-[transform,box-shadow] duration-200 [font-family:inherit] hover:-translate-y-px hover:shadow-[0_8px_28px_rgba(21,101,192,0.45)] disabled:cursor-not-allowed disabled:opacity-[0.65]"
+          >
+            {loading ? "Signing in…" : "Sign In"}
+          </button>
+        </form>
 
         {/* Divider */}
         {/* <div className="login-card__divider">
@@ -194,9 +188,9 @@ export default function LoginPage() {
           Continue with Google
         </button> */}
 
-        <p className="login-card__footer">
+        <p className="mt-5 text-center text-[0.86rem] text-[#607D8B]">
           Don't have an account?{" "}
-          <Link to="/register" className="login-card__footer-link">Create one</Link>
+          <Link to="/register" className="font-semibold text-[#1565C0] no-underline hover:underline">Create one</Link>
         </p>
       </div>
     </div>

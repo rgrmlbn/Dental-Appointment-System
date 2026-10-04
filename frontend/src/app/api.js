@@ -27,6 +27,39 @@ api.interceptors.request.use((config) => {
    since having two separate .use() calls made the error path
    messy (the second .use() would never see errors from the first).
 ────────────────────────────────────────────────────────────── */
+function formatApiError(error) {
+  const data = error.response?.data;
+  if (!data || typeof data !== "object") return;
+
+  const formatDetail = (field, message) => {
+    if (typeof message !== "string" || !message.trim()) return null;
+    if (!field) return message.trim();
+
+    const label = String(field)
+      .replace(/([a-z\d])([A-Z])/g, "$1 $2")
+      .replace(/[._]/g, " ");
+    return `${label.charAt(0).toUpperCase()}${label.slice(1)}: ${message.trim()}`;
+  };
+
+  const details = Array.isArray(data.errors)
+    ? data.errors.map((item) => {
+        if (typeof item === "string") return item.trim();
+        if (!item || typeof item !== "object") return null;
+        return formatDetail(item.field, item.message || item.defaultMessage);
+      })
+    : data.errors && typeof data.errors === "object"
+      ? Object.entries(data.errors).flatMap(([field, messages]) =>
+          (Array.isArray(messages) ? messages : [messages])
+            .map((message) => formatDetail(field, message))
+        )
+      : [];
+
+  const message = details.filter(Boolean).join("; ")
+    || (typeof data.message === "string" ? data.message.trim() : "");
+
+  if (message) error.message = message;
+}
+
 let isRefreshing = false;
 let refreshQueue = []; // holds { resolve, reject } for requests waiting on an in-flight refresh
 
@@ -37,10 +70,11 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     const status = error.response?.status;
     const isRefreshCall = originalRequest?.url?.includes("/auth/refresh");
+    const isLoginCall = originalRequest?.url?.includes("/auth/login");
 
     // Only attempt recovery for 401s, on requests we haven't already retried,
-    // and never for the refresh call itself (that would loop forever).
-    if (status === 401 && !originalRequest._retry && !isRefreshCall) {
+    // and never for login or refresh calls.
+    if (status === 401 && originalRequest && !originalRequest._retry && !isRefreshCall && !isLoginCall) {
       originalRequest._retry = true;
 
       if (isRefreshing) {
@@ -72,6 +106,7 @@ api.interceptors.response.use(
       }
     }
 
+    formatApiError(error);
     return Promise.reject(error);
   }
 );

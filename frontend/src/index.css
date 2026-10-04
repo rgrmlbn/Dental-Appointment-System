@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-navy: #0b2447;
+  --color-blue: #1565c0;
+  --color-sky: #1e88e5;
+  --color-ice: #e3f2fd;
+  --color-mint: #e8f5e9;
+  --color-slate: #546e7a;
+  --color-light-gray: #f5f8fa;
+  --color-border: #e0eaf4;
+  --color-text: #1a2f4e;
+  --color-text-light: #607d8b;
+  --color-accent: #00acc1;
+  --color-accent2: #43a047;
+  --font-display: "Fraunces", serif;
+  --font-body: "DM Sans", sans-serif;
+  --animate-fade-up: fade-up 700ms ease both;
+  --animate-fade-up-delayed: fade-up 700ms 200ms ease both;
+  --animate-glow-pulse: glow-pulse 2s infinite;
+  --animate-register-toast-in: register-toast-in 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-dropdown-in: dropdown-in 150ms ease;
+  --animate-fade-in: fade-in 150ms ease;
+  --animate-slide-up: slide-up 200ms ease;
+  --animate-profile-toast-in: profile-toast-in 250ms ease;
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { box-shadow: 0 0 0 3px rgba(105, 240, 174, 0.3); }
+    50% { box-shadow: 0 0 0 6px rgba(105, 240, 174, 0.1); }
+  }
+
+  @keyframes register-toast-in {
+    from { opacity: 0; transform: translateX(-50%) translateY(-16px) scale(0.95); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  }
+
+  @keyframes dropdown-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes profile-toast-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+input[aria-invalid="true"],
+select[aria-invalid="true"],
+textarea[aria-invalid="true"] {
+  border-color: #e53935;
+  background-color: rgba(229, 57, 53, 0.04);
+}
+
+input[aria-invalid="true"]:focus,
+select[aria-invalid="true"]:focus,
+textarea[aria-invalid="true"]:focus {
+  border-color: #e53935;
+  box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.16);
+}
+
+.doc-tab,
+.doc-tab:hover,
+.doc-tab:active,
+.doc-tab:focus {
+  background-color: transparent;
+}
+
+.doc-tab--active,
+.doc-tab--active:hover {
+  color: #0b2447;
+  border-bottom-color: #1565c0;
+}

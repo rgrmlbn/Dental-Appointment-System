@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { useAuth } from "../../auth/useAuth.js";
 import { userApi } from "../../../app/api.js";
-import "./ProfilePage.css";
-
 /* ── Icons ──────────────────────────────────────────────────── */
 
 const ChevronLeft = () => (
@@ -57,54 +56,54 @@ const CheckIcon = () => (
 /* ── Helpers ────────────────────────────────────────────────── */
 const GENDER_OPTIONS = ["MALE", "FEMALE", "OTHER"];
 
-function Field({ label, name, value, onChange, type = "text", options, error, placeholder }) {
+function Field({ label, name, type = "text", options, error, placeholder, ...fieldProps }) {
   if (options) {
     return (
-      <div className="pf-field">
-        <label className="pf-field__label">{label}</label>
-        <select className={`pf-field__input${error ? " pf-field__input--err" : ""}`} name={name} value={value ?? ""} onChange={onChange}>
+      <div className="pf-field [display:flex] [flex-direction:column] [gap:0.35rem]">
+        <label className="pf-field__label [font-size:0.78rem] [font-weight:600] [color:#546e7a] [letter-spacing:0.01em]">{label}</label>
+        <select {...fieldProps} aria-invalid={Boolean(error)} className={`pf-field__input [padding:0.6rem_0.9rem] [border:1.5px_solid_#cfd8dc] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [color:#0b2447] [background:#f8fbff] [transition:border-color_0.18s,_box-shadow_0.18s] [outline:none] [width:100%] [box-sizing:border-box] focus:[border-color:#1565c0] focus:[box-shadow:0_0_0_3px_rgba(21,101,192,0.1)] focus:[background:#fff]${error ? " pf-field__input--err [border-color:#E53935] [background:rgba(229,_57,_53,_0.04)] focus:[box-shadow:0_0_0_3px_rgba(239,83,80,0.1)]" : ""}`} name={name}>
           <option value="">Select…</option>
           {options.map(o => <option key={o} value={o}>{o.charAt(0) + o.slice(1).toLowerCase()}</option>)}
         </select>
-        {error && <span className="pf-field__error">{error}</span>}
+        {error && <span className="pf-field__error [font-size:0.75rem] [color:#E53935] [font-weight:400]">{error}</span>}
       </div>
     );
   }
   return (
-    <div className="pf-field">
-      <label className="pf-field__label">{label}</label>
+    <div className="pf-field [display:flex] [flex-direction:column] [gap:0.35rem]">
+      <label className="pf-field__label [font-size:0.78rem] [font-weight:600] [color:#546e7a] [letter-spacing:0.01em]">{label}</label>
       <input
-        className={`pf-field__input${error ? " pf-field__input--err" : ""}`}
+        {...fieldProps}
+        aria-invalid={Boolean(error)}
+        className={`pf-field__input [padding:0.6rem_0.9rem] [border:1.5px_solid_#cfd8dc] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [color:#0b2447] [background:#f8fbff] [transition:border-color_0.18s,_box-shadow_0.18s] [outline:none] [width:100%] [box-sizing:border-box] focus:[border-color:#1565c0] focus:[box-shadow:0_0_0_3px_rgba(21,101,192,0.1)] focus:[background:#fff]${error ? " pf-field__input--err [border-color:#E53935] [background:rgba(229,_57,_53,_0.04)] focus:[box-shadow:0_0_0_3px_rgba(239,83,80,0.1)]" : ""}`}
         type={type}
         name={name}
-        value={value ?? ""}
-        onChange={onChange}
         placeholder={placeholder}
       />
-      {error && <span className="pf-field__error">{error}</span>}
+      {error && <span className="pf-field__error [font-size:0.75rem] [color:#E53935] [font-weight:400]">{error}</span>}
     </div>
   );
 }
 
-function PasswordField({ label, name, value, onChange, error }) {
+function PasswordField({ label, name, error, ...fieldProps }) {
   const [show, setShow] = useState(false);
   return (
-    <div className="pf-field">
-      <label className="pf-field__label">{label}</label>
-      <div className="pf-field__pw-wrap">
+    <div className="pf-field [display:flex] [flex-direction:column] [gap:0.35rem]">
+      <label className="pf-field__label [font-size:0.78rem] [font-weight:600] [color:#546e7a] [letter-spacing:0.01em]">{label}</label>
+      <div className="pf-field__pw-wrap [position:relative]">
         <input
-          className={`pf-field__input pf-field__input--pw${error ? " pf-field__input--err" : ""}`}
+          {...fieldProps}
+          aria-invalid={Boolean(error)}
+          className={`pf-field__input [padding:0.6rem_0.9rem] [border:1.5px_solid_#cfd8dc] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [color:#0b2447] [background:#f8fbff] [transition:border-color_0.18s,_box-shadow_0.18s] [outline:none] [width:100%] [box-sizing:border-box] focus:[border-color:#1565c0] focus:[box-shadow:0_0_0_3px_rgba(21,101,192,0.1)] focus:[background:#fff] pf-field__input--pw [padding-right:2.5rem]${error ? " pf-field__input--err [border-color:#E53935] [background:rgba(229,_57,_53,_0.04)] focus:[box-shadow:0_0_0_3px_rgba(239,83,80,0.1)]" : ""}`}
           type={show ? "text" : "password"}
           name={name}
-          value={value}
-          onChange={onChange}
           autoComplete="new-password"
         />
-        <button type="button" className="pf-field__eye" onClick={() => setShow(s => !s)} tabIndex={-1}>
+        <button type="button" className="pf-field__eye [position:absolute] [right:0.75rem] [top:50%] [transform:translateY(-50%)] [background:none] [border:none] [cursor:pointer] [color:#90a4ae] [display:flex] [align-items:center] [padding:0] [transition:color_0.15s] hover:[color:#546e7a]" onClick={() => setShow(s => !s)} tabIndex={-1}>
           <EyeIcon show={show} />
         </button>
       </div>
-      {error && <span className="pf-field__error">{error}</span>}
+      {error && <span className="pf-field__error [font-size:0.75rem] [color:#E53935] [font-weight:400]">{error}</span>}
     </div>
   );
 }
@@ -113,51 +112,44 @@ function PasswordField({ label, name, value, onChange, error }) {
 function Toast({ msg, ok }) {
   if (!msg) return null;
   return (
-    <div className={`pf-toast${ok ? " pf-toast--ok" : " pf-toast--err"}`}>
+    <div className={`pf-toast [display:flex] [align-items:center] [gap:0.5rem] [padding:0.7rem_1rem] [border-radius:10px] [font-size:0.85rem] [font-weight:500] [margin-bottom:1rem] animate-profile-toast-in${ok ? " pf-toast--ok [background:#e8f5e9] [color:#2e7d32] [border:1px_solid_#a5d6a7]" : " pf-toast--err [background:#ffebee] [color:#c62828] [border:1px_solid_#ef9a9a]"}`}>
       {ok && <CheckIcon />} {msg}
     </div>
   );
 }
 
 function UpdateSection({ user }) {
-  const [form, setForm] = useState({
-    firstName: user.firstName ?? "",
-    middleName: user.middleName ?? "",
-    lastName: user.lastName ?? "",
-    suffix: user.suffix ?? "",
-    gender: user.gender ?? "",
-    dateOfBirth: user.dateOfBirth ?? "",
-    contactNumber: user.contactNumber ?? "",
-    street: user.street ?? "",
-    barangay: user.barangay ?? "",
-    city: user.city ?? "",
-    province: user.province ?? "",
-    postalCode: user.postalCode ?? "",
-    email: user.email ?? "",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: {
+      firstName: user.firstName ?? "",
+      middleName: user.middleName ?? "",
+      lastName: user.lastName ?? "",
+      suffix: user.suffix ?? "",
+      gender: user.gender ?? "",
+      dateOfBirth: user.dateOfBirth ?? "",
+      contactNumber: user.contactNumber ?? "",
+      street: user.street ?? "",
+      barangay: user.barangay ?? "",
+      city: user.city ?? "",
+      province: user.province ?? "",
+      postalCode: user.postalCode ?? "",
+      email: user.email ?? "",
+    },
   });
-  const [errors, setErrors] = useState({});
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handle = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-
-  const validate = () => {
-    const errs = {};
-    if (form.firstName && form.firstName.length < 2) errs.firstName = "Min 2 characters";
-    if (form.lastName && form.lastName.length < 2) errs.lastName = "Min 2 characters";
-    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = "Invalid email";
-    if (form.contactNumber && !/^\+?[1-9]\d{1,14}$/.test(form.contactNumber)) errs.contactNumber = "Invalid phone number";
-    return errs;
-  };
-
-  const submit = async () => {
-    const errs = validate();
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-    setErrors({});
+  const submit = async values => {
     setLoading(true);
     try {
       const body = {};
-      Object.entries(form).forEach(([k, v]) => { if (v !== "") body[k] = v; });
+      Object.entries(values).forEach(([k, v]) => { if (v !== "") body[k] = v; });
       await userApi.updateUser(user.id, body);
       setToast({ msg: "Profile updated successfully.", ok: true });
     } catch (e) {
@@ -169,71 +161,65 @@ function UpdateSection({ user }) {
   };
 
   return (
-    <section className="pf-section">
-      <div className="pf-section__header">
-        <span className="pf-section__icon"><EditIcon /></span>
+    <section className="pf-section [background:#fff] [border-radius:20px] [padding:2rem_2rem_1.75rem] [box-shadow:0_12px_40px_rgba(11,36,71,0.15)] max-[640px]:[padding:1.5rem_1.25rem]">
+      <div className="pf-section__header [display:flex] [align-items:flex-start] [gap:0.85rem] [margin-bottom:1.5rem]">
+        <span className="pf-section__icon [width:34px] [height:34px] [border-radius:10px] [background:#e3f2fd] [color:#1565c0] [display:flex] [align-items:center] [justify-content:center] [flex-shrink:0] [margin-top:2px]"><EditIcon /></span>
         <div>
-          <h2 className="pf-section__title">Personal Information</h2>
-          <p className="pf-section__sub">Update your profile details below.</p>
+          <h2 className="pf-section__title [font-size:1rem] [font-weight:700] [color:#0b2447] [margin:0_0_0.2rem]">Personal Information</h2>
+          <p className="pf-section__sub [font-size:0.8rem] [color:#90a4ae] [margin:0] [font-weight:300]">Update your profile details below.</p>
         </div>
       </div>
       <Toast {...(toast ?? {})} msg={toast?.msg} ok={toast?.ok} />
-      <div className="pf-grid pf-grid--2">
-        <Field label="First Name" name="firstName" value={form.firstName} onChange={handle} error={errors.firstName} />
-        <Field label="Middle Name" name="middleName" value={form.middleName} onChange={handle} />
-        <Field label="Last Name" name="lastName" value={form.lastName} onChange={handle} error={errors.lastName} />
-        <Field label="Suffix" name="suffix" value={form.suffix} onChange={handle} placeholder="Jr., Sr., III…" />
-        <Field label="Gender" name="gender" value={form.gender} onChange={handle} options={GENDER_OPTIONS} />
-        <Field label="Date of Birth" name="dateOfBirth" value={form.dateOfBirth} onChange={handle} type="date" />
-        <Field label="Contact Number" name="contactNumber" value={form.contactNumber} onChange={handle} error={errors.contactNumber} placeholder="+639XXXXXXXXX" />
-        <Field label="Email" name="email" value={form.email} onChange={handle} type="email" error={errors.email} />
+      <form onSubmit={handleSubmit(submit)} noValidate>
+      <div className="pf-grid [display:grid] [gap:1rem] pf-grid--2 [grid-template-columns:1fr_1fr] max-[640px]:[grid-template-columns:1fr]">
+        <Field label="First Name" name="firstName" {...register("firstName", { validate: value => !value || value.length >= 2 || "Min 2 characters" })} error={errors.firstName?.message} />
+        <Field label="Middle Name" name="middleName" {...register("middleName")} />
+        <Field label="Last Name" name="lastName" {...register("lastName", { validate: value => !value || value.length >= 2 || "Min 2 characters" })} error={errors.lastName?.message} />
+        <Field label="Suffix" name="suffix" placeholder="Jr., Sr., III…" {...register("suffix")} />
+        <Field label="Gender" name="gender" options={GENDER_OPTIONS} {...register("gender")} />
+        <Field label="Date of Birth" name="dateOfBirth" type="date" {...register("dateOfBirth")} />
+        <Field label="Contact Number" name="contactNumber" placeholder="+639XXXXXXXXX" {...register("contactNumber", { validate: value => !value || /^\+?[1-9]\d{1,14}$/.test(value) || "Invalid phone number" })} error={errors.contactNumber?.message} />
+        <Field label="Email" name="email" type="email" {...register("email", { validate: value => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || "Invalid email" })} error={errors.email?.message} />
       </div>
-      <div className="pf-section__divider" />
-      <p className="pf-section__group-label">Address</p>
-      <div className="pf-grid pf-grid--2">
-        <Field label="Street" name="street" value={form.street} onChange={handle} />
-        <Field label="Barangay" name="barangay" value={form.barangay} onChange={handle} />
-        <Field label="City" name="city" value={form.city} onChange={handle} />
-        <Field label="Province" name="province" value={form.province} onChange={handle} />
-        <Field label="Postal Code" name="postalCode" value={form.postalCode} onChange={handle} />
+      <div className="pf-section__divider [height:1px] [background:#f0f4f8] [margin:1.25rem_0]" />
+      <p className="pf-section__group-label [font-size:0.72rem] [font-weight:700] [letter-spacing:0.08em] [text-transform:uppercase] [color:#90a4ae] [margin:0_0_0.85rem]">Address</p>
+      <div className="pf-grid [display:grid] [gap:1rem] pf-grid--2 [grid-template-columns:1fr_1fr] max-[640px]:[grid-template-columns:1fr]">
+        <Field label="Street" name="street" {...register("street")} />
+        <Field label="Barangay" name="barangay" {...register("barangay")} />
+        <Field label="City" name="city" {...register("city")} />
+        <Field label="Province" name="province" {...register("province")} />
+        <Field label="Postal Code" name="postalCode" {...register("postalCode")} />
       </div>
-      <div className="pf-section__actions">
-        <button className="pf-btn pf-btn--primary" onClick={submit} disabled={loading}>
+      <div className="pf-section__actions [margin-top:1.5rem] [display:flex] [justify-content:flex-end]">
+        <button type="submit" className="pf-btn [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.7rem_1.5rem] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [font-weight:600] [cursor:pointer] [transition:transform_0.14s,_box-shadow_0.18s,_background_0.18s] [border:none] disabled:[opacity:0.6] disabled:[cursor:not-allowed] pf-btn--primary [background:linear-gradient(135deg,_#0b2447_0%,_#1565c0_100%)] [color:#fff] [box-shadow:0_4px_16px_rgba(21,101,192,0.35)] [&:hover:not(:disabled)]:[transform:translateY(-1px)] [&:hover:not(:disabled)]:[box-shadow:0_8px_24px_rgba(21,101,192,0.45)]" disabled={loading}>
           {loading ? "Saving…" : "Save Changes"}
         </button>
       </div>
+      </form>
     </section>
   );
 }
 
 function ChangePasswordSection({ user }) {
-  const [form, setForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
-  const [errors, setErrors] = useState({});
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: { currentPassword: "", newPassword: "", confirmPassword: "" },
+  });
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handle = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-
-  const validate = () => {
-    const errs = {};
-    if (!form.currentPassword) errs.currentPassword = "Required";
-    if (!form.newPassword) errs.newPassword = "Required";
-    else if (form.newPassword.length < 8) errs.newPassword = "Min 8 characters";
-    else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(form.newPassword))
-      errs.newPassword = "Must include uppercase, lowercase, digit & special character";
-    if (form.newPassword !== form.confirmPassword) errs.confirmPassword = "Passwords do not match";
-    return errs;
-  };
-
-  const submit = async () => {
-    const errs = validate();
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-    setErrors({});
+  const submit = async values => {
     setLoading(true);
     try {
-      await userApi.changePassword(user.id, form);
+      await userApi.changePassword(user.id, values);
       setToast({ msg: "Password changed. You may need to log in again.", ok: true });
-      setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      reset();
     } catch (e) {
       setToast({ msg: e.message, ok: false });
     } finally {
@@ -243,81 +229,97 @@ function ChangePasswordSection({ user }) {
   };
 
   return (
-    <section className="pf-section">
-      <div className="pf-section__header">
-        <span className="pf-section__icon"><LockIcon /></span>
+    <section className="pf-section [background:#fff] [border-radius:20px] [padding:2rem_2rem_1.75rem] [box-shadow:0_12px_40px_rgba(11,36,71,0.15)] max-[640px]:[padding:1.5rem_1.25rem]">
+      <div className="pf-section__header [display:flex] [align-items:flex-start] [gap:0.85rem] [margin-bottom:1.5rem]">
+        <span className="pf-section__icon [width:34px] [height:34px] [border-radius:10px] [background:#e3f2fd] [color:#1565c0] [display:flex] [align-items:center] [justify-content:center] [flex-shrink:0] [margin-top:2px]"><LockIcon /></span>
         <div>
-          <h2 className="pf-section__title">Change Password</h2>
-          <p className="pf-section__sub">Use a strong password you don't use elsewhere.</p>
+          <h2 className="pf-section__title [font-size:1rem] [font-weight:700] [color:#0b2447] [margin:0_0_0.2rem]">Change Password</h2>
+          <p className="pf-section__sub [font-size:0.8rem] [color:#90a4ae] [margin:0] [font-weight:300]">Use a strong password you don't use elsewhere.</p>
         </div>
       </div>
       <Toast msg={toast?.msg} ok={toast?.ok} />
-      <div className="pf-grid pf-grid--1">
-        <PasswordField label="Current Password" name="currentPassword" value={form.currentPassword} onChange={handle} error={errors.currentPassword} />
-        <PasswordField label="New Password" name="newPassword" value={form.newPassword} onChange={handle} error={errors.newPassword} />
-        <PasswordField label="Confirm New Password" name="confirmPassword" value={form.confirmPassword} onChange={handle} error={errors.confirmPassword} />
+      <form onSubmit={handleSubmit(submit)} noValidate>
+      <div className="pf-grid [display:grid] [gap:1rem] pf-grid--1 [grid-template-columns:1fr]">
+        <PasswordField label="Current Password" name="currentPassword" {...register("currentPassword", { required: "Required" })} error={errors.currentPassword?.message} />
+        <PasswordField label="New Password" name="newPassword" {...register("newPassword", {
+          required: "Required",
+          deps: "confirmPassword",
+          minLength: { value: 8, message: "Min 8 characters" },
+          pattern: { value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/, message: "Must include uppercase, lowercase, digit & special character" },
+        })} error={errors.newPassword?.message} />
+        <PasswordField label="Confirm New Password" name="confirmPassword" {...register("confirmPassword", {
+          validate: (value, values) => value === values.newPassword || "Passwords do not match",
+        })} error={errors.confirmPassword?.message} />
       </div>
-      <div className="pf-section__actions">
-        <button className="pf-btn pf-btn--primary" onClick={submit} disabled={loading}>
+      <div className="pf-section__actions [margin-top:1.5rem] [display:flex] [justify-content:flex-end]">
+        <button type="submit" className="pf-btn [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.7rem_1.5rem] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [font-weight:600] [cursor:pointer] [transition:transform_0.14s,_box-shadow_0.18s,_background_0.18s] [border:none] disabled:[opacity:0.6] disabled:[cursor:not-allowed] pf-btn--primary [background:linear-gradient(135deg,_#0b2447_0%,_#1565c0_100%)] [color:#fff] [box-shadow:0_4px_16px_rgba(21,101,192,0.35)] [&:hover:not(:disabled)]:[transform:translateY(-1px)] [&:hover:not(:disabled)]:[box-shadow:0_8px_24px_rgba(21,101,192,0.45)]" disabled={loading}>
           {loading ? "Updating…" : "Update Password"}
         </button>
       </div>
+      </form>
     </section>
   );
 }
 
 function DeleteSection({ user, onDeleted }) {
-  const [confirm, setConfirm] = useState("");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({ mode: "onChange", reValidateMode: "onChange", defaultValues: { confirm: "" } });
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [requestError, setRequestError] = useState("");
 
   const submit = async () => {
-    if (confirm !== "DELETE") { setError('Type DELETE to confirm'); return; }
     setLoading(true);
     try {
       await userApi.deleteUser(user.id);
       onDeleted();
     } catch (e) {
-      setError(e.message);
+      setRequestError(e.message);
       setLoading(false);
     }
   };
 
   return (
-    <section className="pf-section pf-section--danger">
-      <div className="pf-section__header">
-        <span className="pf-section__icon pf-section__icon--danger"><TrashIcon /></span>
+    <section className="pf-section [background:#fff] [border-radius:20px] [padding:2rem_2rem_1.75rem] [box-shadow:0_12px_40px_rgba(11,36,71,0.15)] max-[640px]:[padding:1.5rem_1.25rem] pf-section--danger [border:1.5px_solid_#ffcdd2]">
+      <div className="pf-section__header [display:flex] [align-items:flex-start] [gap:0.85rem] [margin-bottom:1.5rem]">
+        <span className="pf-section__icon [width:34px] [height:34px] [border-radius:10px] [background:#e3f2fd] [color:#1565c0] [display:flex] [align-items:center] [justify-content:center] [flex-shrink:0] [margin-top:2px] pf-section__icon--danger [background:#ffebee] [color:#c62828]"><TrashIcon /></span>
         <div>
-          <h2 className="pf-section__title pf-section__title--danger">Delete Account</h2>
-          <p className="pf-section__sub">This action is permanent and cannot be undone.</p>
+          <h2 className="pf-section__title [font-size:1rem] [font-weight:700] [color:#0b2447] [margin:0_0_0.2rem] pf-section__title--danger [color:#c62828]">Delete Account</h2>
+          <p className="pf-section__sub [font-size:0.8rem] [color:#90a4ae] [margin:0] [font-weight:300]">This action is permanent and cannot be undone.</p>
         </div>
       </div>
       {!open ? (
-        <button className="pf-btn pf-btn--danger-outline" onClick={() => setOpen(true)}>
+        <button className="pf-btn [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.7rem_1.5rem] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [font-weight:600] [cursor:pointer] [transition:transform_0.14s,_box-shadow_0.18s,_background_0.18s] [border:none] disabled:[opacity:0.6] disabled:[cursor:not-allowed] pf-btn--danger-outline [background:none] [border:1.5px_solid_#ef9a9a] [color:#c62828] hover:[background:#ffebee] hover:[border-color:#c62828]" onClick={() => setOpen(true)}>
           Delete My Account
         </button>
       ) : (
-        <div className="pf-delete-confirm">
-          <p className="pf-delete-confirm__warn">
+        <form onSubmit={handleSubmit(submit)} noValidate>
+        <div className="pf-delete-confirm [display:flex] [flex-direction:column] [gap:0.85rem]">
+          <p className="pf-delete-confirm__warn [font-size:0.85rem] [color:#546e7a] [margin:0] [line-height:1.55] [&_strong]:[color:#c62828]">
             All your data will be permanently removed. Type <strong>DELETE</strong> below to proceed.
           </p>
+          {requestError && <span className="pf-field__error [font-size:0.75rem] [color:#E53935]">{requestError}</span>}
           <input
-            className={`pf-field__input${error ? " pf-field__input--err" : ""}`}
-            value={confirm}
-            onChange={e => { setConfirm(e.target.value); setError(""); }}
+            {...register("confirm", { validate: value => value === "DELETE" || "Type DELETE to confirm" })}
+            aria-invalid={Boolean(errors.confirm)}
+            className={`pf-field__input [padding:0.6rem_0.9rem] [border:1.5px_solid_#cfd8dc] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [color:#0b2447] [background:#f8fbff] [transition:border-color_0.18s,_box-shadow_0.18s] [outline:none] [width:100%] [box-sizing:border-box] focus:[border-color:#1565c0] focus:[box-shadow:0_0_0_3px_rgba(21,101,192,0.1)] focus:[background:#fff]${errors.confirm ? " pf-field__input--err [border-color:#E53935] [background:rgba(229,_57,_53,_0.04)] focus:[box-shadow:0_0_0_3px_rgba(239,83,80,0.1)]" : ""}`}
             placeholder="Type DELETE to confirm"
           />
-          {error && <span className="pf-field__error">{error}</span>}
-          <div className="pf-delete-confirm__btns">
-            <button className="pf-btn pf-btn--ghost" onClick={() => { setOpen(false); setConfirm(""); setError(""); }}>
+          {errors.confirm && <span className="pf-field__error [font-size:0.75rem] [color:#E53935] [font-weight:400]">{errors.confirm.message}</span>}
+          <div className="pf-delete-confirm__btns [display:flex] [gap:0.75rem] [flex-wrap:wrap]">
+            <button type="button" className="pf-btn [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.7rem_1.5rem] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [font-weight:600] [cursor:pointer] [transition:transform_0.14s,_box-shadow_0.18s,_background_0.18s] [border:none] disabled:[opacity:0.6] disabled:[cursor:not-allowed] pf-btn--ghost [background:none] [border:1.5px_solid_#cfd8dc] [color:#546e7a] hover:[background:#f0f4f8]" onClick={() => { setOpen(false); reset(); setRequestError(""); }}>
               Cancel
             </button>
-            <button className="pf-btn pf-btn--danger" onClick={submit} disabled={loading}>
+            <button type="submit" className="pf-btn [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.7rem_1.5rem] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [font-weight:600] [cursor:pointer] [transition:transform_0.14s,_box-shadow_0.18s,_background_0.18s] [border:none] disabled:[opacity:0.6] disabled:[cursor:not-allowed] pf-btn--danger [background:#c62828] [color:#fff] [box-shadow:0_4px_14px_rgba(198,40,40,0.3)] [&:hover:not(:disabled)]:[background:#b71c1c] [&:hover:not(:disabled)]:[transform:translateY(-1px)]" disabled={loading}>
               {loading ? "Deleting…" : "Permanently Delete"}
             </button>
           </div>
         </div>
+        </form>
       )}
     </section>
   );
@@ -339,27 +341,27 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="pf-page">
-      <div className="pf-page__glow-1" />
-      <div className="pf-page__glow-2" />
+    <div className="pf-page min-h-screen flex flex-col relative overflow-x-hidden font-body [background:linear-gradient(155deg,_#0b2447_0%,_#1565c0_55%,_#1e88e5_100%)]">
+      <div className="pf-page__glow-1 [position:absolute] [inset:0] [pointer-events:none] [background:radial-gradient(ellipse_60%_50%_at_30%_60%,_rgba(30,136,229,0.2)_0%,_transparent_70%)] [z-index:0]" />
+      <div className="pf-page__glow-2 [position:absolute] [top:-100px] [right:-100px] [width:420px] [height:420px] [border-radius:50%] [background:rgba(255,255,255,0.04)] [pointer-events:none] [z-index:0]" />
 
-      <main className="pf-main">
+      <main className="pf-main [position:relative] [z-index:1] [flex:1] [max-width:780px] [width:100%] [margin:0_auto] [padding:2rem_1.5rem_5rem] [display:flex] [flex-direction:column] [gap:1.25rem] max-[640px]:[padding:1.5rem_1rem_4rem]">
         {/* Back */}
-        <button className="pf-back" onClick={() => navigate("/dashboard")}>
+        <button className="pf-back [display:inline-flex] [align-items:center] [gap:0.4rem] [background:none] [border:none] [color:rgba(255,255,255,0.75)] [font-family:DM_Sans,_sans-serif] [font-size:0.88rem] [font-weight:500] [cursor:pointer] [padding:0] [transition:color_0.18s] [width:fit-content] hover:[color:#fff]" onClick={() => navigate("/dashboard")}>
           <ChevronLeft /> Back to Dashboard
         </button>
 
         {/* Profile header */}
-        <div className="pf-header-card">
-          <div className="pf-header-card__avatar">{initials}</div>
+        <div className="pf-header-card [background:#fff] [border-radius:20px] [padding:1.75rem_2rem] [box-shadow:0_20px_60px_rgba(11,36,71,0.2)] [display:flex] [align-items:center] [gap:1.25rem] max-[640px]:[padding:1.25rem]">
+          <div className="pf-header-card__avatar [width:62px] [height:62px] [border-radius:50%] [background:linear-gradient(135deg,_#0b2447_0%,_#1565c0_100%)] [color:#fff] [font-size:1.2rem] [font-weight:700] [display:flex] [align-items:center] [justify-content:center] [flex-shrink:0] [letter-spacing:0.04em] [box-shadow:0_4px_16px_rgba(21,101,192,0.35)]">{initials}</div>
           <div className="pf-header-card__info">
-            <h1 className="pf-header-card__name">{user.firstName} {user.middleName ? user.middleName + " " : ""}{user.lastName}{user.suffix ? ", " + user.suffix : ""}</h1>
-            <p className="pf-header-card__meta">{user.email} · <span className="pf-header-card__role">{user.role}</span></p>
+            <h1 className="pf-header-card__name [font-size:1.25rem] [font-weight:700] [color:#0b2447] [margin:0_0_0.25rem] [letter-spacing:-0.02em]">{user.firstName} {user.middleName ? user.middleName + " " : ""}{user.lastName}{user.suffix ? ", " + user.suffix : ""}</h1>
+            <p className="pf-header-card__meta [font-size:0.83rem] [color:#607d8b] [margin:0]">{user.email} · <span className="pf-header-card__role [background:#e3f2fd] [color:#1565c0] [font-size:0.72rem] [font-weight:700] [letter-spacing:0.07em] [text-transform:uppercase] [padding:0.15rem_0.55rem] [border-radius:50px]">{user.role}</span></p>
           </div>
         </div>
 
         {/* Tab strip */}
-        <div className="pf-tabs">
+        <div className="pf-tabs [display:flex] [gap:0.5rem] [flex-wrap:wrap] max-[640px]:[gap:0.4rem]">
           {[
             { key: "info", label: "Profile Info", icon: <EditIcon /> },
             { key: "password", label: "Change Password", icon: <LockIcon /> },
@@ -367,7 +369,7 @@ export default function ProfilePage() {
           ].map(t => (
             <button
               key={t.key}
-              className={`pf-tab${tab === t.key ? " pf-tab--active" : ""}${t.danger ? " pf-tab--danger" : ""}`}
+              className={`pf-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:0.6rem_1.1rem] [border-radius:50px] [border:1.5px_solid_rgba(255,255,255,0.25)] [background:rgba(255,255,255,0.1)] [color:rgba(255,255,255,0.75)] [font-family:DM_Sans,_sans-serif] [font-size:0.86rem] [font-weight:500] [cursor:pointer] [transition:background_0.18s,_border-color_0.18s,_color_0.18s] [backdrop-filter:blur(6px)] hover:[background:rgba(255,255,255,0.18)] hover:[color:#fff] max-[640px]:[font-size:0.8rem] max-[640px]:[padding:0.5rem_0.85rem]${tab === t.key ? " pf-tab--active [background:#fff] [color:#0b2447] [border-color:#fff] [font-weight:600] [&.pf-tab--danger.pf-tab--active]:[background:#fff1f1] [&.pf-tab--danger.pf-tab--active]:[color:#c62828] [&.pf-tab--danger.pf-tab--active]:[border-color:#ffcdd2]" : ""}${t.danger ? " pf-tab--danger [color:rgba(255,120,120,0.85)] [border-color:rgba(255,100,100,0.3)] hover:[background:rgba(255,80,80,0.12)] hover:[color:#ff6b6b]" : ""}`}
               onClick={() => setTab(t.key)}
             >
               {t.icon} {t.label}
@@ -376,7 +378,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Content */}
-        <div className="pf-content">
+        <div className="pf-content [display:flex] [flex-direction:column] [gap:1.25rem]">
           {tab === "info" && <UpdateSection user={user} />}
           {tab === "password" && <ChangePasswordSection user={user} />}
           {tab === "delete" && <DeleteSection user={user} onDeleted={handleDeleted} />}

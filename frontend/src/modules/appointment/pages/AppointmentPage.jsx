@@ -1,7 +1,7 @@
 import { useState, useEffect, useReducer } from "react";
 import { Link } from "react-router-dom";
+import { useForm, useWatch } from "react-hook-form";
 import { appointmentApi, doctorApi, scheduleApi } from "../../../app/api.js";
-import "./AppointmentPage.css";
 
 /* ── Icons ──────────────────────────────────────────────────── */
 const ArrowLeft = () => (
@@ -94,41 +94,46 @@ const slotsReducer = (state, action) => {
 
 /* ── Reusable Field ─────────────────────────────────────────── */
 const Field = ({ label, required, error, children, full }) => (
-  <div className={`appt-field ${full ? "appt-field--full" : ""}`}>
-    <label className="appt-field__label">
-      {label}{required && <span className="appt-field__required">*</span>}
+  <div className={`flex flex-col gap-[5px] ${full ? "col-span-full" : ""}`}>
+    <label className="text-[0.79rem] font-semibold tracking-[0.01em] text-[#0B2447]">
+      {label}{required && <span className="ml-[2px] text-[#E53935]">*</span>}
     </label>
     {children}
-    {error && <span className="appt-field__error">{error}</span>}
+    {error && <span className="text-[0.75rem] font-medium text-[#E53935]">{error}</span>}
   </div>
 );
 
 /* ── Success Screen ─────────────────────────────────────────── */
 const SuccessScreen = ({ form, onReset }) => (
-  <div className="appt-success">
-    <div className="appt-success__icon"><CheckCircleIcon /></div>
-    <h2 className="appt-success__title">Appointment Submitted!</h2>
-    <p className="appt-success__desc">
+  <div className="flex flex-col items-center pt-4 pb-2 text-center">
+    <div className="mb-[1.1rem] text-[#1565C0]"><CheckCircleIcon /></div>
+    <h2 className="mb-3 text-2xl font-bold text-[#0B2447]">Appointment Submitted!</h2>
+    <p className="mb-[0.6rem] text-[0.9rem] leading-[1.6] text-[#455A64]">
       Your appointment for <strong>{form.service}</strong> on{" "}
       <strong>{form.date}</strong> at <strong>{form.time}</strong> has been received.
     </p>
-    <p className="appt-success__note">We'll confirm your appointment once reviewed.</p>
-    <div className="appt-success__actions">
-      <button onClick={onReset} className="appt-card__submit">Book Another</button>
+    <p className="mb-7 text-[0.82rem] leading-[1.5] text-[#607D8B]">We'll confirm your appointment once reviewed.</p>
+    <div className="flex w-full flex-col items-center gap-[0.85rem]">
+      <button onClick={onReset} className="mt-2 w-full cursor-pointer rounded-[10px] border-0 bg-[linear-gradient(135deg,#0B2447_0%,#1565C0_100%)] p-[0.85rem] text-[0.97rem] font-semibold tracking-[0.01em] text-white shadow-[0_4px_18px_rgba(21,101,192,0.38)] transition-[transform,box-shadow] duration-200 [font-family:inherit] hover:-translate-y-px hover:shadow-[0_8px_28px_rgba(21,101,192,0.45)]">Book Another</button>
     </div>
   </div>
 );
 
 /* ── Main Page ──────────────────────────────────────────────── */
 export default function AppointmentPage() {
-  const [form, setForm] = useState({
-    service: "",
-    doctor:  "",
-    date:    "",
-    time:    "",
-    notes:   "",
+  const {
+    register,
+    handleSubmit: handleFormSubmit,
+    control,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: { service: "", doctor: "", date: "", time: "", notes: "" },
   });
-  const [errors,      setErrors]      = useState({});
+  const form = useWatch({ control });
   const [submitted,   setSubmitted]   = useState(false);
   const [loading,     setLoading]     = useState(false);
   const [submitError, setSubmitError] = useState(null);
@@ -168,29 +173,32 @@ export default function AppointmentPage() {
     return () => { cancelled = true; };
   }, [form.doctor, form.date]);
 
-  const onChange = (key, val) => {
-    setForm(f => {
-      const next = { ...f, [key]: val };
-      if (key === "doctor" || key === "date") next.time = "";
-      return next;
+  const registerField = name => {
+    const field = register(name, {
+      validate: (value, values) => validate({ ...values, [name]: value })[name] || true,
     });
-    if (errors[key]) setErrors(e => { const n = { ...e }; delete n[key]; return n; });
-    if (submitError) setSubmitError(null);
+    return {
+      ...field,
+      onChange: event => {
+        field.onChange(event);
+        if (name === "doctor" || name === "date") {
+          setValue("time", "", { shouldValidate: true });
+        }
+        if (submitError) setSubmitError(null);
+      },
+    };
   };
 
-  const handleSubmit = async () => {
-    const errs = validate(form);
-    if (Object.keys(errs).length) { setErrors(errs); return; }
-
+  const handleBooking = async values => {
     try {
       setLoading(true);
       setSubmitError(null);
       await appointmentApi.book({
-        doctorId:  parseInt(form.doctor),
-        date:      form.date,
-        startTime: convertTo24h(form.time),
-        services:  [SERVICE_MAP[form.service]],
-        concerns:  form.notes.trim(),
+        doctorId:  parseInt(values.doctor),
+        date:      values.date,
+        startTime: convertTo24h(values.time),
+        services:  [SERVICE_MAP[values.service]],
+        concerns:  values.notes.trim(),
       });
       setSubmitted(true);
     } catch (err) {
@@ -201,8 +209,7 @@ export default function AppointmentPage() {
   };
 
   const handleReset = () => {
-    setForm({ service: "", doctor: "", date: "", time: "", notes: "" });
-    setErrors({});
+    reset();
     setSubmitted(false);
     setSubmitError(null);
     dispatchSlots({ type: "RESET" });
@@ -222,60 +229,61 @@ export default function AppointmentPage() {
   ];
 
   return (
-    <div className="appt-page">
-      <div className="appt-page__glow-1" />
-      <div className="appt-page__glow-2" />
+    <div className="relative flex min-h-screen flex-col items-center justify-start overflow-hidden bg-[linear-gradient(155deg,#0B2447_0%,#1565C0_55%,#1E88E5_100%)] px-6 pt-20 pb-12 [font-family:DM_Sans,sans-serif]">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_30%_60%,rgba(30,136,229,0.2)_0%,transparent_70%)]" />
+      <div className="pointer-events-none absolute -top-20 -right-20 h-[340px] w-[340px] rounded-full bg-[rgba(255,255,255,0.04)]" />
 
-      <div className="appt-page__back">
-        <Link to="/dashboard" className="appt-page__back-link">
+      <div className="absolute top-6 left-7 z-10">
+        <Link to="/dashboard" className="inline-flex items-center gap-2 rounded-full border-[1.5px] border-[rgba(255,255,255,0.4)] bg-[rgba(255,255,255,0.08)] px-[0.9rem] py-[0.45rem] text-[0.85rem] font-medium text-[rgba(255,255,255,0.9)] no-underline backdrop-blur-[8px] transition-[background,border-color] duration-200 hover:border-[rgba(255,255,255,0.7)] hover:bg-[rgba(255,255,255,0.14)]">
           <ArrowLeft /> Back to home
         </Link>
       </div>
 
-      <div className="appt-card">
-        <div className="appt-card__logo">
-          <img src="/logo.png" alt="DentalCare Logo" className="appt-card__logo-img" />
+      <div className="relative z-[1] w-full max-w-[560px] rounded-[22px] border border-[rgba(255,255,255,0.08)] bg-white px-9 py-10 shadow-[0_24px_80px_rgba(11,36,71,0.25)] max-[500px]:rounded-[18px] max-[500px]:px-5 max-[500px]:py-8">
+        <div className="mb-7 flex items-center justify-center rounded-[14px] bg-[linear-gradient(135deg,#0B2447_0%,#1565C0_100%)] px-[1.4rem] py-3 shadow-[0_4px_18px_rgba(21,101,192,0.38)]">
+          <img src="/logo.png" alt="DentalCare Logo" className="block h-[38px] w-auto object-contain" />
         </div>
 
         {submitted ? (
           <SuccessScreen form={form} onReset={handleReset} />
         ) : (
           <>
-            <div className="appt-card__header">
-              <h1 className="appt-card__title">Book an Appointment</h1>
-              <p className="appt-card__subtitle">Fill in the details below to schedule your visit</p>
+            <div className="mb-5">
+              <h1 className="m-0 mb-[0.35rem] text-[1.75rem] leading-[1.15] font-bold tracking-[-0.02em] text-[#0B2447] max-[500px]:text-[1.45rem]">Book an Appointment</h1>
+              <p className="m-0 text-[0.88rem] font-light text-[#607D8B]">Fill in the details below to schedule your visit</p>
             </div>
 
-            <div className="appt-card__info-banner">
-              <span className="appt-card__info-icon"><InfoIcon /></span>
+            <div className="mb-6 flex items-start gap-[0.6rem] rounded-[10px] border-[1.5px] border-[rgba(21,101,192,0.18)] bg-[rgba(227,242,253,0.55)] px-4 py-[0.8rem] text-[0.82rem] leading-[1.5] font-normal text-[#1565C0]">
+              <span className="mt-px flex shrink-0 text-[#1565C0]"><InfoIcon /></span>
               <span>Appointments are subject to doctor availability. You will receive a confirmation once reviewed.</span>
             </div>
 
             {submitError && (
-              <div className="appt-card__error-banner">{submitError}</div>
+              <div className="mb-3 rounded-lg border border-[#ffa39e] bg-[#fff1f0] px-[14px] py-[10px] text-[0.84rem] text-[#cf1322]">{submitError}</div>
             )}
 
+            <form onSubmit={handleFormSubmit(handleBooking)} noValidate>
             {/* Section: Service */}
-            <div className="appt-section">
-              <div className="appt-section__title">Service Details</div>
-              <div className="appt-grid">
+            <div className="mb-6">
+              <div className="mb-[0.85rem] border-b-[1.5px] border-[rgba(21,101,192,0.12)] pb-[0.45rem] text-[0.73rem] font-bold tracking-[0.07em] text-[#0B2447] uppercase">Service Details</div>
+              <div className="grid grid-cols-2 gap-4 max-[500px]:grid-cols-1">
 
-                <Field label="Service Type" required error={errors.service}>
+                <Field label="Service Type" required error={errors.service?.message}>
                   <select
-                    value={form.service}
-                    onChange={e => onChange("service", e.target.value)}
-                    className={`appt-input appt-select ${errors.service ? "appt-input--error" : ""}`}
+                    {...registerField("service")}
+                    aria-invalid={Boolean(errors.service)}
+                    className={`box-border w-full cursor-pointer appearance-none rounded-[9px] border-[1.5px] border-[rgba(21,101,192,0.18)] bg-[rgba(227,242,253,0.3)] bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231565C0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")] bg-[position:right_0.8rem_center] bg-no-repeat px-4 py-[0.7rem] pr-[2.4rem] text-[0.9rem] text-[#0B2447] outline-none transition-[border-color,box-shadow,background-color] duration-200 [font-family:inherit] focus:border-[#1565C0] focus:bg-white focus:shadow-[0_0_0_3px_rgba(21,101,192,0.11)] ${errors.service ? "border-[#E53935] bg-[rgba(229,57,53,0.04)]" : ""}`}
                   >
                     <option value="">Select a service</option>
                     {SERVICES.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </Field>
 
-                <Field label="Doctor" required error={errors.doctor || doctorsError}>
+                <Field label="Doctor" required error={errors.doctor?.message || doctorsError}>
                   <select
-                    value={form.doctor}
-                    onChange={e => onChange("doctor", e.target.value)}
-                    className={`appt-input appt-select ${errors.doctor || doctorsError ? "appt-input--error" : ""}`}
+                    {...registerField("doctor")}
+                    aria-invalid={Boolean(errors.doctor || doctorsError)}
+                    className={`box-border w-full cursor-pointer appearance-none rounded-[9px] border-[1.5px] border-[rgba(21,101,192,0.18)] bg-[rgba(227,242,253,0.3)] bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231565C0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")] bg-[position:right_0.8rem_center] bg-no-repeat px-4 py-[0.7rem] pr-[2.4rem] text-[0.9rem] text-[#0B2447] outline-none transition-[border-color,box-shadow,background-color] duration-200 [font-family:inherit] focus:border-[#1565C0] focus:bg-white focus:shadow-[0_0_0_3px_rgba(21,101,192,0.11)] disabled:cursor-not-allowed disabled:opacity-60 ${errors.doctor || doctorsError ? "border-[#E53935] bg-[rgba(229,57,53,0.04)]" : ""}`}
                     disabled={doctorsLoading || !!doctorsError}
                   >
                     <option value="">
@@ -293,36 +301,36 @@ export default function AppointmentPage() {
                 <Field
                   label="Preferred Date"
                   required
-                  error={errors.date}
+                  error={errors.date?.message}
                 >
                   <input
                     type="date"
                     min={today}
-                    value={form.date}
-                    onChange={e => onChange("date", e.target.value)}
-                    className={`appt-input ${errors.date || doctorUnavailable ? "appt-input--error" : ""}`}
+                    {...registerField("date")}
+                    aria-invalid={Boolean(errors.date || doctorUnavailable)}
+                    className={`box-border w-full appearance-none rounded-[9px] border-[1.5px] border-[rgba(21,101,192,0.18)] bg-[rgba(227,242,253,0.3)] px-4 py-[0.7rem] text-[0.9rem] text-[#0B2447] outline-none transition-[border-color,box-shadow,background-color] duration-200 [font-family:inherit] focus:border-[#1565C0] focus:bg-white focus:shadow-[0_0_0_3px_rgba(21,101,192,0.11)] ${errors.date || doctorUnavailable ? "border-[#E53935] bg-[rgba(229,57,53,0.04)]" : ""}`}
                   />
                   {doctorUnavailable && (
-                    <div className="appt-unavailable">
+                    <div className="flex items-center gap-1.5 text-[0.8rem] text-[#E53935]">
                       <InfoIcon />
                       <span>This doctor is not available. Choose a different date.</span>
                     </div>
                   )}
                   {slotsState.loading && (
-                    <div className="appt-slots-checking">
-                      <span className="appt-slots-spinner" /> Checking availability…
+                    <div className="flex items-center gap-2 text-[0.8rem] text-[#607D8B]">
+                      <span className="h-3 w-3 animate-spin rounded-full border-2 border-[#1565C0] border-t-transparent" /> Checking availability…
                     </div>
                   )}
                   {slotsState.error && (
-                    <div className="appt-unavailable"><InfoIcon /><span>{slotsState.error}</span></div>
+                    <div className="flex items-center gap-1.5 text-[0.8rem] text-[#E53935]"><InfoIcon /><span>{slotsState.error}</span></div>
                   )}
                 </Field>
 
-                <Field label="Preferred Time" required error={errors.time}>
+                <Field label="Preferred Time" required error={errors.time?.message}>
                   <select
-                    value={form.time}
-                    onChange={e => onChange("time", e.target.value)}
-                    className={`appt-input appt-select ${errors.time ? "appt-input--error" : ""}`}
+                    {...registerField("time")}
+                    aria-invalid={Boolean(errors.time)}
+                    className={`box-border w-full cursor-pointer appearance-none rounded-[9px] border-[1.5px] border-[rgba(21,101,192,0.18)] bg-[rgba(227,242,253,0.3)] bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%231565C0' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")] bg-[position:right_0.8rem_center] bg-no-repeat px-4 py-[0.7rem] pr-[2.4rem] text-[0.9rem] text-[#0B2447] outline-none transition-[border-color,box-shadow,background-color] duration-200 [font-family:inherit] focus:border-[#1565C0] focus:bg-white focus:shadow-[0_0_0_3px_rgba(21,101,192,0.11)] disabled:cursor-not-allowed disabled:opacity-60 ${errors.time ? "border-[#E53935] bg-[rgba(229,57,53,0.04)]" : ""}`}
                     disabled={slotsState.loading || doctorUnavailable}
                   >
                     <option value="">
@@ -342,18 +350,18 @@ export default function AppointmentPage() {
             </div>
 
             {/* Section: Concerns */}
-            <div className="appt-section">
-              <div className="appt-section__title">Concerns</div>
-              <div className="appt-grid">
-                <Field label="Notes / Concerns" required error={errors.notes} full>
+            <div className="mb-6">
+              <div className="mb-[0.85rem] border-b-[1.5px] border-[rgba(21,101,192,0.12)] pb-[0.45rem] text-[0.73rem] font-bold tracking-[0.07em] text-[#0B2447] uppercase">Concerns</div>
+              <div className="grid grid-cols-2 gap-4 max-[500px]:grid-cols-1">
+                <Field label="Notes / Concerns" required error={errors.notes?.message} full>
                   <textarea
                     placeholder="Describe your concern or any relevant dental history... (minimum 20 characters)"
-                    value={form.notes}
-                    onChange={e => onChange("notes", e.target.value)}
-                    className={`appt-input appt-textarea ${errors.notes ? "appt-input--error" : ""}`}
+                    {...registerField("notes")}
+                    aria-invalid={Boolean(errors.notes)}
+                    className={`box-border min-h-20 w-full resize-y rounded-[9px] border-[1.5px] border-[rgba(21,101,192,0.18)] bg-[rgba(227,242,253,0.3)] px-4 py-[0.7rem] text-[0.9rem] leading-[1.5] text-[#0B2447] outline-none transition-[border-color,box-shadow,background-color] duration-200 [font-family:inherit] focus:border-[#1565C0] focus:bg-white focus:shadow-[0_0_0_3px_rgba(21,101,192,0.11)] ${errors.notes ? "border-[#E53935] bg-[rgba(229,57,53,0.04)]" : ""}`}
                     rows={4}
                   />
-                  <span className={`appt-field__counter ${form.notes.length > 2000 ? "appt-field__counter--over" : ""}`}>
+                  <span className={`self-end text-xs text-[#607D8B] ${form.notes.length > 2000 ? "font-semibold text-[#E53935]" : ""}`}>
                     {form.notes.length} / 2000
                   </span>
                 </Field>
@@ -362,16 +370,17 @@ export default function AppointmentPage() {
 
             <button
               type="button"
-              onClick={handleSubmit}
-              className="appt-card__submit"
+              type="submit"
+              className="mt-2 w-full cursor-pointer rounded-[10px] border-0 bg-[linear-gradient(135deg,#0B2447_0%,#1565C0_100%)] p-[0.85rem] text-[0.97rem] font-semibold tracking-[0.01em] text-white shadow-[0_4px_18px_rgba(21,101,192,0.38)] transition-[transform,box-shadow] duration-200 [font-family:inherit] hover:-translate-y-px hover:shadow-[0_8px_28px_rgba(21,101,192,0.45)] disabled:cursor-not-allowed disabled:opacity-60"
               disabled={loading || doctorsLoading || slotsState.loading || doctorUnavailable}
             >
               {loading ? "Submitting..." : "Confirm Appointment"}
             </button>
+            </form>
 
-            <p className="appt-card__footer">
+            <p className="mt-[1.1rem] text-center text-[0.86rem] text-[#607D8B]">
               Already booked?{" "}
-              <Link to="/" className="appt-card__footer-link">Back to home</Link>
+              <Link to="/" className="font-semibold text-[#1565C0] no-underline hover:underline">Back to home</Link>
             </p>
           </>
         )}

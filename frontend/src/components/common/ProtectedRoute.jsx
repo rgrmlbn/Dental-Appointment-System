@@ -11,11 +11,7 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "center",
-        height: "100vh", background: "#f8fafc", color: "#64748b",
-        fontFamily: "system-ui, sans-serif", fontSize: "0.9rem",
-      }}>
+      <div className="flex h-screen items-center justify-center bg-[#f8fafc] font-sans text-[0.9rem] text-[#64748b]">
         Loading…
       </div>
     );

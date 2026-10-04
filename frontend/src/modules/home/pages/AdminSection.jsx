@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { appointmentApi, doctorApi, scheduleApi, userApi } from "../../../app/api.js";
 
 /* ── Icons ──────────────────────────────────────────────────── */
@@ -75,10 +76,10 @@ const SERVICE_MAP = {
 };
 
 const STATUS_STYLES = {
-  SCHEDULED: { label: "Scheduled", cls: "badge--scheduled" },
-  COMPLETED:  { label: "Completed",  cls: "badge--completed" },
-  CANCELLED:  { label: "Cancelled",  cls: "badge--cancelled" },
-  PENDING:    { label: "Pending",    cls: "badge--pending"   },
+  SCHEDULED: { label: "Scheduled", cls: "badge--scheduled [background:#e3f2fd] [color:#1565c0]" },
+  COMPLETED:  { label: "Completed",  cls: "badge--completed [background:#e8f5e9] [color:#2e7d32]" },
+  CANCELLED:  { label: "Cancelled",  cls: "badge--cancelled [background:#ffebee] [color:#c62828]" },
+  PENDING:    { label: "Pending",    cls: "badge--pending [background:#fff8e1] [color:#f57f17]"   },
 };
 
 const ALL_STATUSES = ["SCHEDULED", "PENDING", "COMPLETED", "CANCELLED"];
@@ -134,24 +135,24 @@ function DeleteUserModal({ user, onClose, onConfirm }) {
   };
 
   return (
-    <div className="dash-modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="dash-modal dash-modal--sm">
-        <div className="dash-modal__header">
-          <h3 className="dash-modal__title">Delete User</h3>
-          <button className="dash-modal__close" onClick={onClose}><XIcon /></button>
+    <div className="dash-modal-overlay [position:fixed] [inset:0] [z-index:1000] [background:rgba(11,_36,_71,_0.45)] [backdrop-filter:blur(5px)] [display:flex] [align-items:center] [justify-content:center] [padding:1rem]" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="dash-modal [background:#fff] [border:1px_solid_#e3eaf5] [border-radius:20px] [width:100%] [max-width:480px] [box-shadow:0_24px_80px_rgba(11,_36,_71,_0.22)] [overflow:hidden] dash-modal--sm [max-width:380px] animate-slide-up">
+        <div className="dash-modal__header [display:flex] [align-items:center] [justify-content:space-between] [padding:1.4rem_1.6rem_1.1rem] [border-bottom:1px_solid_#f0f4f8] max-[640px]:[padding-left:1.25rem] max-[640px]:[padding-right:1.25rem]">
+          <h3 className="dash-modal__title [font-size:1rem] [font-weight:700] [color:#0b2447] [margin:0] [letter-spacing:-0.015em]">Delete User</h3>
+          <button className="dash-modal__close [display:flex] [align-items:center] [justify-content:center] [width:30px] [height:30px] [border-radius:8px] [background:#f1f5f9] [border:none] [color:#607d8b] [cursor:pointer] [transition:background_0.15s,_color_0.15s] hover:[background:#e3eaf5] hover:[color:#0b2447]" onClick={onClose}><XIcon /></button>
         </div>
-        <div className="dash-modal__body">
-          <p className="dash-modal__confirm-text">
+        <div className="dash-modal__body [padding:1.4rem_1.6rem] [display:flex] [flex-direction:column] [gap:1.1rem] max-[640px]:[padding-left:1.25rem] max-[640px]:[padding-right:1.25rem]">
+          <p className="dash-modal__confirm-text [font-size:0.92rem] [color:#37474f] [line-height:1.6] [margin:0] [&_strong]:[color:#0b2447]">
             Are you sure you want to delete <strong>{user.firstName} {user.lastName}</strong>?
           </p>
-          <p className="dash-modal__confirm-sub">This action cannot be undone.</p>
-          {error && <div className="dash-modal__error">{error}</div>}
+          <p className="dash-modal__confirm-sub [font-size:0.8rem] [color:#90a4ae] [margin:0.3rem_0_0]">This action cannot be undone.</p>
+          {error && <div className="dash-modal__error [margin:0_1.6rem] [padding:0.7rem_1rem] [background:#ffebee] [border:1px_solid_#ffcdd2] [border-radius:10px] [font-size:0.83rem] [color:#c62828] max-[640px]:[margin-left:1.25rem] max-[640px]:[margin-right:1.25rem]">{error}</div>}
         </div>
-        <div className="dash-modal__footer">
-          <button className="dash-modal__btn dash-modal__btn--cancel" onClick={onClose} disabled={deleting}>
+        <div className="dash-modal__footer [display:flex] [justify-content:flex-end] [gap:0.65rem] [padding:1rem_1.6rem_1.4rem] [border-top:1px_solid_#f0f4f8] max-[640px]:[padding-left:1.25rem] max-[640px]:[padding-right:1.25rem]">
+          <button className="dash-modal__btn [display:inline-flex] [align-items:center] [gap:0.35rem] [font-size:0.85rem] [font-weight:600] [padding:0.6rem_1.25rem] [border-radius:10px] [border:none] [cursor:pointer] [font-family:DM_Sans,_sans-serif] [transition:transform_0.1s,_box-shadow_0.15s,_background_0.15s] disabled:[opacity:0.5] disabled:[cursor:not-allowed] disabled:[transform:none_!important] dash-modal__btn--cancel [background:#f1f5f9] [color:#455a64] [border:1.5px_solid_#e3eaf5] [&:hover:not(:disabled)]:[background:#e3eaf5]" onClick={onClose} disabled={deleting}>
             Keep
           </button>
-          <button className="dash-modal__btn dash-modal__btn--danger" onClick={handleConfirm} disabled={deleting}>
+          <button className="dash-modal__btn [display:inline-flex] [align-items:center] [gap:0.35rem] [font-size:0.85rem] [font-weight:600] [padding:0.6rem_1.25rem] [border-radius:10px] [border:none] [cursor:pointer] [font-family:DM_Sans,_sans-serif] [transition:transform_0.1s,_box-shadow_0.15s,_background_0.15s] disabled:[opacity:0.5] disabled:[cursor:not-allowed] disabled:[transform:none_!important] dash-modal__btn--danger [background:linear-gradient(135deg,_#c62828_0%,_#ef5350_100%)] [color:#fff] [box-shadow:0_4px_14px_rgba(198,_40,_40,_0.3)] [&:hover:not(:disabled)]:[transform:translateY(-1px)] [&:hover:not(:disabled)]:[box-shadow:0_6px_20px_rgba(198,_40,_40,_0.4)]" onClick={handleConfirm} disabled={deleting}>
             {deleting ? "Deleting…" : "Yes, Delete"}
           </button>
         </div>
@@ -179,24 +180,24 @@ function DeleteAppointmentModal({ appointment, onClose, onConfirm }) {
   };
 
   return (
-    <div className="dash-modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="dash-modal dash-modal--sm">
-        <div className="dash-modal__header">
-          <h3 className="dash-modal__title">Delete Appointment</h3>
-          <button className="dash-modal__close" onClick={onClose}><XIcon /></button>
+    <div className="dash-modal-overlay [position:fixed] [inset:0] [z-index:1000] [background:rgba(11,_36,_71,_0.45)] [backdrop-filter:blur(5px)] [display:flex] [align-items:center] [justify-content:center] [padding:1rem]" onClick={(e) => e.target === e.currentTarget && onClose()}>
+      <div className="dash-modal [background:#fff] [border:1px_solid_#e3eaf5] [border-radius:20px] [width:100%] [max-width:480px] [box-shadow:0_24px_80px_rgba(11,_36,_71,_0.22)] [overflow:hidden] dash-modal--sm [max-width:380px] animate-slide-up">
+        <div className="dash-modal__header [display:flex] [align-items:center] [justify-content:space-between] [padding:1.4rem_1.6rem_1.1rem] [border-bottom:1px_solid_#f0f4f8] max-[640px]:[padding-left:1.25rem] max-[640px]:[padding-right:1.25rem]">
+          <h3 className="dash-modal__title [font-size:1rem] [font-weight:700] [color:#0b2447] [margin:0] [letter-spacing:-0.015em]">Delete Appointment</h3>
+          <button className="dash-modal__close [display:flex] [align-items:center] [justify-content:center] [width:30px] [height:30px] [border-radius:8px] [background:#f1f5f9] [border:none] [color:#607d8b] [cursor:pointer] [transition:background_0.15s,_color_0.15s] hover:[background:#e3eaf5] hover:[color:#0b2447]" onClick={onClose}><XIcon /></button>
         </div>
-        <div className="dash-modal__body">
-          <p className="dash-modal__confirm-text">
+        <div className="dash-modal__body [padding:1.4rem_1.6rem] [display:flex] [flex-direction:column] [gap:1.1rem] max-[640px]:[padding-left:1.25rem] max-[640px]:[padding-right:1.25rem]">
+          <p className="dash-modal__confirm-text [font-size:0.92rem] [color:#37474f] [line-height:1.6] [margin:0] [&_strong]:[color:#0b2447]">
             Are you sure you want to delete the{" "}
             <strong>{getServiceLabel(appointment.services)}</strong> appointment on{" "}
             <strong>{formatDate(appointment.date)}</strong>?
           </p>
-          <p className="dash-modal__confirm-sub">This action cannot be undone.</p>
-          {error && <div className="dash-modal__error">{error}</div>}
+          <p className="dash-modal__confirm-sub [font-size:0.8rem] [color:#90a4ae] [margin:0.3rem_0_0]">This action cannot be undone.</p>
+          {error && <div className="dash-modal__error [margin:0_1.6rem] [padding:0.7rem_1rem] [background:#ffebee] [border:1px_solid_#ffcdd2] [border-radius:10px] [font-size:0.83rem] [color:#c62828] max-[640px]:[margin-left:1.25rem] max-[640px]:[margin-right:1.25rem]">{error}</div>}
         </div>
-        <div className="dash-modal__footer">
-          <button className="dash-modal__btn dash-modal__btn--cancel" onClick={onClose} disabled={deleting}>Keep</button>
-          <button className="dash-modal__btn dash-modal__btn--danger" onClick={handleConfirm} disabled={deleting}>
+        <div className="dash-modal__footer [display:flex] [justify-content:flex-end] [gap:0.65rem] [padding:1rem_1.6rem_1.4rem] [border-top:1px_solid_#f0f4f8] max-[640px]:[padding-left:1.25rem] max-[640px]:[padding-right:1.25rem]">
+          <button className="dash-modal__btn [display:inline-flex] [align-items:center] [gap:0.35rem] [font-size:0.85rem] [font-weight:600] [padding:0.6rem_1.25rem] [border-radius:10px] [border:none] [cursor:pointer] [font-family:DM_Sans,_sans-serif] [transition:transform_0.1s,_box-shadow_0.15s,_background_0.15s] disabled:[opacity:0.5] disabled:[cursor:not-allowed] disabled:[transform:none_!important] dash-modal__btn--cancel [background:#f1f5f9] [color:#455a64] [border:1.5px_solid_#e3eaf5] [&:hover:not(:disabled)]:[background:#e3eaf5]" onClick={onClose} disabled={deleting}>Keep</button>
+          <button className="dash-modal__btn [display:inline-flex] [align-items:center] [gap:0.35rem] [font-size:0.85rem] [font-weight:600] [padding:0.6rem_1.25rem] [border-radius:10px] [border:none] [cursor:pointer] [font-family:DM_Sans,_sans-serif] [transition:transform_0.1s,_box-shadow_0.15s,_background_0.15s] disabled:[opacity:0.5] disabled:[cursor:not-allowed] disabled:[transform:none_!important] dash-modal__btn--danger [background:linear-gradient(135deg,_#c62828_0%,_#ef5350_100%)] [color:#fff] [box-shadow:0_4px_14px_rgba(198,_40,_40,_0.3)] [&:hover:not(:disabled)]:[transform:translateY(-1px)] [&:hover:not(:disabled)]:[box-shadow:0_6px_20px_rgba(198,_40,_40,_0.4)]" onClick={handleConfirm} disabled={deleting}>
             {deleting ? "Deleting…" : "Yes, Delete"}
           </button>
         </div>
@@ -207,7 +208,7 @@ function DeleteAppointmentModal({ appointment, onClose, onConfirm }) {
 
 /* ── Admin Appointment Card ────────────────────────────────────────────── */
 function AdminAppointmentCard({ appt, onDelete }) {
-  const status = STATUS_STYLES[appt.status] ?? { label: appt.status, cls: "badge--pending" };
+  const status = STATUS_STYLES[appt.status] ?? { label: appt.status, cls: "badge--pending [background:#fff8e1] [color:#f57f17]" };
   const canDelete = appt.status !== "COMPLETED";
 
   const patientFull = `${appt.patient?.firstName ?? ""} ${appt.patient?.lastName ?? ""}`.trim();
@@ -217,12 +218,12 @@ function AdminAppointmentCard({ appt, onDelete }) {
   const rawName = appt.doctorName ?? doctorFull ?? null;
 
   return (
-    <div className={`dash-appt-card dash-appt-card--${appt.status?.toLowerCase()}`}>
-      <div className="dash-appt-card__top">
-        <span className={`dash-appt-badge ${status.cls}`}>{status.label}</span>
+    <div className={`dash-appt-card [background:#f8fafc] [border:1px_solid_#e3eaf5] [border-radius:16px] [padding:1.1rem_1.25rem] [display:flex] [flex-direction:column] [gap:0.65rem] [transition:border-color_0.2s,_box-shadow_0.2s,_transform_0.15s] hover:[border-color:#90caf9] hover:[box-shadow:0_6px_24px_rgba(21,_101,_192,_0.1)] hover:[transform:translateY(-1px)] animate-fade-in dash-appt-card--${appt.status?.toLowerCase()}`}>
+      <div className="dash-appt-card__top [display:flex] [align-items:center] [justify-content:space-between] [gap:0.5rem] [flex-wrap:wrap]">
+        <span className={`dash-appt-badge [display:inline-block] [font-size:0.67rem] [font-weight:700] [letter-spacing:0.05em] [text-transform:uppercase] [padding:0.25rem_0.7rem] [border-radius:100px] ${status.cls}`}>{status.label}</span>
         {canDelete && (
           <button
-            className="doc-offday-row__del"
+            className="doc-offday-row__del [display:flex] [align-items:center] [justify-content:center] [width:30px] [height:30px] [border-radius:8px] [background:#ffebee] [border:1px_solid_#ffcdd2] [color:#c62828] [cursor:pointer] [transition:background_0.15s,_border-color_0.15s,_transform_0.1s] [flex-shrink:0] [&:hover:not(:disabled)]:[background:#ffcdd2] [&:hover:not(:disabled)]:[border-color:#ef9a9a] [&:hover:not(:disabled)]:[transform:scale(1.05)] disabled:[opacity:0.5] disabled:[cursor:not-allowed]"
             onClick={() => onDelete(appt)}
             title="Cancel appointment"
           >
@@ -231,33 +232,33 @@ function AdminAppointmentCard({ appt, onDelete }) {
         )}
       </div>
 
-      <div className="dash-appt-card__service">{getServiceLabel(appt.services)}</div>
+      <div className="dash-appt-card__service [font-size:0.97rem] [font-weight:700] [color:#0b2447] [letter-spacing:-0.01em]">{getServiceLabel(appt.services)}</div>
 
-      <div className="dash-appt-card__meta">
-        <div className="dash-appt-card__meta-item">
+      <div className="dash-appt-card__meta [display:flex] [flex-wrap:wrap] [gap:0.75rem]">
+        <div className="dash-appt-card__meta-item [display:flex] [align-items:center] [gap:0.35rem] [font-size:0.8rem] [color:#607d8b] [&_svg]:[color:#90a4ae] [&_svg]:[flex-shrink:0]">
           <CalendarIcon /><span>{formatDate(appt.date)}</span>
         </div>
-        <div className="dash-appt-card__meta-item">
+        <div className="dash-appt-card__meta-item [display:flex] [align-items:center] [gap:0.35rem] [font-size:0.8rem] [color:#607d8b] [&_svg]:[color:#90a4ae] [&_svg]:[flex-shrink:0]">
           <ClockIcon /><span>{formatTime(appt.startTime)}</span>
         </div>
       </div>
 
-      <div className="admin-appt-card__people">
+      <div className="admin-appt-card__people [display:flex] [flex-direction:column] [gap:0.3rem]">
         {patientName && (
-          <div className="admin-appt-card__person admin-appt-card__person--patient">
+          <div className="admin-appt-card__person [display:inline-flex] [align-items:center] [gap:0.35rem] [font-size:0.79rem] [font-weight:600] admin-appt-card__person--patient [color:#2e7d32]">
             <UserIcon /> {patientName}
           </div>
         )}
         {rawName && (
-          <div className="admin-appt-card__person admin-appt-card__person--doctor">
+          <div className="admin-appt-card__person [display:inline-flex] [align-items:center] [gap:0.35rem] [font-size:0.79rem] [font-weight:600] admin-appt-card__person--doctor [color:#1565c0]">
             <StethoscopeIcon /> Dr. {rawName}
           </div>
         )}
       </div>
 
       {appt.concerns && (
-        <div className="dash-appt-card__concerns">
-          <span className="dash-appt-card__concerns-label">Notes:</span> {appt.concerns}
+        <div className="dash-appt-card__concerns [font-size:0.78rem] [color:#78909c] [line-height:1.5] [border-top:1px_solid_#e8edf3] [padding-top:0.6rem] [margin-top:0.1rem]">
+          <span className="dash-appt-card__concerns-label [font-weight:600] [color:#455a64]">Notes:</span> {appt.concerns}
         </div>
       )}
     </div>
@@ -269,9 +270,9 @@ function AdminAppointmentsTab({ appointments, loading, error, onDelete }) {
   const [filter, setFilter] = useState("ALL");
 
   if (loading) return (
-    <div className="dash-appts__loading"><span className="dash-appts__spinner" /> Loading appointments…</div>
+    <div className="dash-appts__loading [display:flex] [align-items:center] [gap:0.75rem] [padding:1.5rem_0] [font-size:0.9rem] [color:#607d8b]"><span className="dash-appts__spinner [display:inline-block] [width:16px] [height:16px] [border:2px_solid_#e3eaf5] [border-top-color:#1565c0] [border-radius:50%] animate-spin [flex-shrink:0]" /> Loading appointments…</div>
   );
-  if (error) return <div className="dash-appts__error">{error}</div>;
+  if (error) return <div className="dash-appts__error [display:flex] [align-items:center] [gap:0.75rem] [padding:1rem_1.25rem] [border-radius:12px] [font-size:0.88rem] [color:#c62828] [background:#ffebee] [border:1px_solid_#ffcdd2]">{error}</div>;
 
   const filtered = filter === "ALL"
     ? appointments
@@ -283,16 +284,16 @@ function AdminAppointmentsTab({ appointments, loading, error, onDelete }) {
   };
 
   return (
-    <div className="admin-tab-panel">
-      <div className="admin-filter-bar">
+    <div className="admin-tab-panel [display:flex] [flex-direction:column] [gap:1.5rem]">
+      <div className="admin-filter-bar [display:flex] [flex-wrap:wrap] [gap:0.45rem]">
         {["ALL", ...ALL_STATUSES].map((s) => (
           <button
             key={s}
-            className={`admin-filter-chip${filter === s ? " admin-filter-chip--active" : ""}`}
+            className={`admin-filter-chip [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.38rem_0.85rem] [border-radius:100px] [border:1.5px_solid_#e3eaf5] [background:#f8fafc] [font-family:DM_Sans,_sans-serif] [font-size:0.78rem] [font-weight:600] [color:#607d8b] [cursor:pointer] [white-space:nowrap] [transition:background_0.15s,_border-color_0.15s,_color_0.15s] hover:[background:#e3eaf5] hover:[color:#0b2447]${filter === s ? " admin-filter-chip--active [background:linear-gradient(135deg,_#0b2447_0%,_#1565c0_100%)] [border-color:transparent] [color:#fff] hover:[background:linear-gradient(135deg,_#0d2d5c_0%,_#1976d2_100%)] hover:[color:#fff]" : ""}`}
             onClick={() => setFilter(s)}
           >
             {s === "ALL" ? "All" : (STATUS_STYLES[s]?.label ?? s)}
-            <span className="admin-filter-chip__count">
+            <span className="admin-filter-chip__count [display:inline-flex] [align-items:center] [justify-content:center] [min-width:18px] [height:18px] [padding:0_5px] [border-radius:100px] [font-size:0.65rem] [font-weight:700] [background:rgba(255,_255,_255,_0.22)] [color:inherit] [.admin-filter-chip:not(.admin-filter-chip--active)_&]:[background:#e3eaf5] [.admin-filter-chip:not(.admin-filter-chip--active)_&]:[color:#607d8b]">
               {s === "ALL"
                 ? appointments.length
                 : appointments.filter((a) => a.status === s).length}
@@ -302,15 +303,15 @@ function AdminAppointmentsTab({ appointments, loading, error, onDelete }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="dash-appts__empty">
+        <div className="dash-appts__empty [display:flex] [flex-direction:column] [align-items:center] [gap:0.85rem] [padding:3rem_1rem] [text-align:center] [color:#90a4ae] [background:#f8fafc] [border:1.5px_dashed_#cfd8dc] [border-radius:14px] [&_svg]:[color:#b0bec5] [&_p]:[margin:0] [&_p]:[font-size:0.88rem] [&_p]:[font-weight:400]">
           <CalendarIcon /><p>No appointments match this filter.</p>
         </div>
       ) : (
         <>
           {groups.UPCOMING.length > 0 && (
-            <div className="dash-appts__group">
-              <div className="dash-appts__group-label">Upcoming ({groups.UPCOMING.length})</div>
-              <div className="dash-appts__grid">
+            <div className="dash-appts__group [margin-bottom:1.75rem] [&:last-child]:[margin-bottom:0]">
+              <div className="dash-appts__group-label [font-size:0.7rem] [font-weight:700] [letter-spacing:0.1em] [text-transform:uppercase] [color:#607d8b] [margin:0.85rem_0]">Upcoming ({groups.UPCOMING.length})</div>
+              <div className="dash-appts__grid [display:grid] [grid-template-columns:repeat(auto-fill,_minmax(260px,_1fr))] [gap:1rem] max-[640px]:[grid-template-columns:1fr]">
                 {groups.UPCOMING.map((a) => (
                   <AdminAppointmentCard key={a.id} appt={a} onDelete={onDelete} />
                 ))}
@@ -318,9 +319,9 @@ function AdminAppointmentsTab({ appointments, loading, error, onDelete }) {
             </div>
           )}
           {groups.PAST.length > 0 && (
-            <div className="dash-appts__group">
-              <div className="dash-appts__group-label">Past ({groups.PAST.length})</div>
-              <div className="dash-appts__grid">
+            <div className="dash-appts__group [margin-bottom:1.75rem] [&:last-child]:[margin-bottom:0]">
+              <div className="dash-appts__group-label [font-size:0.7rem] [font-weight:700] [letter-spacing:0.1em] [text-transform:uppercase] [color:#607d8b] [margin:0.85rem_0]">Past ({groups.PAST.length})</div>
+              <div className="dash-appts__grid [display:grid] [grid-template-columns:repeat(auto-fill,_minmax(260px,_1fr))] [gap:1rem] max-[640px]:[grid-template-columns:1fr]">
                 {groups.PAST.map((a) => (
                   <AdminAppointmentCard key={a.id} appt={a} onDelete={onDelete} />
                 ))}
@@ -339,25 +340,37 @@ function UserRow({ user, onDelete }) {
   const isPatient = user.role === "PATIENT";
 
   return (
-    <div className="admin-user-row">
-      <div className="admin-user-row__left">
-        <div className={`admin-user-row__avatar admin-user-row__avatar--${user.role?.toLowerCase()}`}>
+    <div className="admin-user-row [display:flex] [align-items:center] [justify-content:space-between] [gap:1rem] [padding:0.85rem_1.1rem] [background:#f8fafc] [border:1px_solid_#e3eaf5] [border-radius:12px] [transition:border-color_0.15s,_box-shadow_0.15s] hover:[border-color:#90caf9] hover:[box-shadow:0_3px_12px_rgba(21,_101,_192,_0.08)]">
+      <div className="admin-user-row__left [display:flex] [align-items:center] [gap:0.85rem] [min-width:0]">
+        <div className={`admin-user-row__avatar [width:38px] [height:38px] [border-radius:50%] [font-size:0.76rem] [font-weight:700] [letter-spacing:0.03em] [display:flex] [align-items:center] [justify-content:center] [flex-shrink:0] [color:#fff] ${
+          isDoctor
+            ? "[background:linear-gradient(135deg,_#0b2447_0%,_#1565c0_100%)]"
+            : isPatient
+              ? "[background:linear-gradient(135deg,_#1b5e20_0%,_#43a047_100%)]"
+              : "[background:linear-gradient(135deg,_#4a148c_0%,_#7b1fa2_100%)]"
+        }`}>
           {initials}
         </div>
-        <div className="admin-user-row__info">
-          <div className="admin-user-row__name">
+        <div className="admin-user-row__info [min-width:0]">
+          <div className="admin-user-row__name [font-size:0.9rem] [font-weight:700] [color:#0b2447] [white-space:nowrap] [overflow:hidden] [text-overflow:ellipsis]">
             {user.firstName} {user.lastName}
           </div>
-          <div className="admin-user-row__email">{user.email}</div>
+          <div className="admin-user-row__email [font-size:0.76rem] [color:#78909c] [font-weight:400] [white-space:nowrap] [overflow:hidden] [text-overflow:ellipsis] [max-width:220px] max-[640px]:[max-width:140px]">{user.email}</div>
         </div>
       </div>
-      <div className="admin-user-row__right">
-        <span className={`admin-user-role-badge admin-user-role-badge--${user.role?.toLowerCase()}`}>
+      <div className="admin-user-row__right [display:flex] [align-items:center] [gap:0.65rem] [flex-shrink:0]">
+        <span className={`admin-user-role-badge [display:inline-flex] [align-items:center] [gap:0.3rem] [padding:0.25rem_0.65rem] [border-radius:100px] [font-size:0.68rem] [font-weight:700] [letter-spacing:0.04em] [text-transform:uppercase] [white-space:nowrap] max-[640px]:[display:none] ${
+          isDoctor
+            ? "[background:#e3f2fd] [color:#1565c0]"
+            : isPatient
+              ? "[background:#e8f5e9] [color:#2e7d32]"
+              : "[background:#f3e5f5] [color:#7b1fa2]"
+        }`}>
           {isDoctor ? <StethoscopeIcon /> : isPatient ? <UserIcon /> : <ShieldIcon />}
           {user.role?.charAt(0) + user.role?.slice(1).toLowerCase()}
         </span>
         <button
-          className="doc-offday-row__del"
+          className="doc-offday-row__del [display:flex] [align-items:center] [justify-content:center] [width:30px] [height:30px] [border-radius:8px] [background:#ffebee] [border:1px_solid_#ffcdd2] [color:#c62828] [cursor:pointer] [transition:background_0.15s,_border-color_0.15s,_transform_0.1s] [flex-shrink:0] [&:hover:not(:disabled)]:[background:#ffcdd2] [&:hover:not(:disabled)]:[border-color:#ef9a9a] [&:hover:not(:disabled)]:[transform:scale(1.05)] disabled:[opacity:0.5] disabled:[cursor:not-allowed]"
           onClick={() => onDelete(user)}
           title="Delete user"
         >
@@ -371,12 +384,16 @@ function UserRow({ user, onDelete }) {
 /* ── Admin Users Tab ────────────────────────────────────────── */
 function AdminUsersTab({ users, loading, error, onDelete }) {
   const [roleFilter, setRoleFilter] = useState("ALL");
-  const [search, setSearch]         = useState("");
+  const { register, control } = useForm({
+    mode: "onChange",
+    defaultValues: { search: "" },
+  });
+  const search = useWatch({ control, name: "search" });
 
   if (loading) return (
-    <div className="dash-appts__loading"><span className="dash-appts__spinner" /> Loading users…</div>
+    <div className="dash-appts__loading [display:flex] [align-items:center] [gap:0.75rem] [padding:1.5rem_0] [font-size:0.9rem] [color:#607d8b]"><span className="dash-appts__spinner [display:inline-block] [width:16px] [height:16px] [border:2px_solid_#e3eaf5] [border-top-color:#1565c0] [border-radius:50%] animate-spin [flex-shrink:0]" /> Loading users…</div>
   );
-  if (error) return <div className="dash-appts__error">{error}</div>;
+  if (error) return <div className="dash-appts__error [display:flex] [align-items:center] [gap:0.75rem] [padding:1rem_1.25rem] [border-radius:12px] [font-size:0.88rem] [color:#c62828] [background:#ffebee] [border:1px_solid_#ffcdd2]">{error}</div>;
 
   // Exclude admins
   const nonAdmins = users.filter((u) => u.role !== "ADMIN");
@@ -396,24 +413,23 @@ function AdminUsersTab({ users, loading, error, onDelete }) {
   const patients = filtered.filter((u) => u.role === "PATIENT");
 
   return (
-    <div className="admin-tab-panel">
-      <div className="admin-users__toolbar">
+    <div className="admin-tab-panel [display:flex] [flex-direction:column] [gap:1.5rem]">
+      <div className="admin-users__toolbar [display:flex] [align-items:center] [gap:0.75rem] [flex-wrap:wrap] max-[640px]:[flex-direction:column] max-[640px]:[align-items:stretch]">
         <input
-          className="admin-users__search"
+          className="admin-users__search [flex:1] [min-width:180px] [background:#f8fafc] [border:1.5px_solid_#e3eaf5] [border-radius:10px] [padding:0.6rem_0.9rem] [font-family:DM_Sans,_sans-serif] [font-size:0.88rem] [color:#0b2447] [outline:none] [transition:border-color_0.15s,_box-shadow_0.15s] focus:[border-color:#1565c0] focus:[box-shadow:0_0_0_3px_rgba(21,_101,_192,_0.1)] focus:[background:#fff] placeholder:[color:#b0bec5]"
           type="text"
           placeholder="Search by name or email…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          {...register("search")}
         />
-        <div className="admin-filter-bar admin-filter-bar--inline">
+        <div className="admin-filter-bar [display:flex] [flex-wrap:wrap] [gap:0.45rem] admin-filter-bar--inline [flex-wrap:nowrap] max-[640px]:[flex-wrap:wrap]">
           {["ALL", "DOCTOR", "PATIENT"].map((r) => (
             <button
               key={r}
-              className={`admin-filter-chip${roleFilter === r ? " admin-filter-chip--active" : ""}`}
+              className={`admin-filter-chip [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.38rem_0.85rem] [border-radius:100px] [border:1.5px_solid_#e3eaf5] [background:#f8fafc] [font-family:DM_Sans,_sans-serif] [font-size:0.78rem] [font-weight:600] [color:#607d8b] [cursor:pointer] [white-space:nowrap] [transition:background_0.15s,_border-color_0.15s,_color_0.15s] hover:[background:#e3eaf5] hover:[color:#0b2447]${roleFilter === r ? " admin-filter-chip--active [background:linear-gradient(135deg,_#0b2447_0%,_#1565c0_100%)] [border-color:transparent] [color:#fff] hover:[background:linear-gradient(135deg,_#0d2d5c_0%,_#1976d2_100%)] hover:[color:#fff]" : ""}`}
               onClick={() => setRoleFilter(r)}
             >
               {r === "ALL" ? "All" : r.charAt(0) + r.slice(1).toLowerCase()}
-              <span className="admin-filter-chip__count">
+              <span className="admin-filter-chip__count [display:inline-flex] [align-items:center] [justify-content:center] [min-width:18px] [height:18px] [padding:0_5px] [border-radius:100px] [font-size:0.65rem] [font-weight:700] [background:rgba(255,_255,_255,_0.22)] [color:inherit] [.admin-filter-chip:not(.admin-filter-chip--active)_&]:[background:#e3eaf5] [.admin-filter-chip:not(.admin-filter-chip--active)_&]:[color:#607d8b]">
                 {r === "ALL"
                   ? nonAdmins.length
                   : nonAdmins.filter((u) => u.role === r).length}
@@ -424,23 +440,23 @@ function AdminUsersTab({ users, loading, error, onDelete }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="dash-appts__empty">
+        <div className="dash-appts__empty [display:flex] [flex-direction:column] [align-items:center] [gap:0.85rem] [padding:3rem_1rem] [text-align:center] [color:#90a4ae] [background:#f8fafc] [border:1.5px_dashed_#cfd8dc] [border-radius:14px] [&_svg]:[color:#b0bec5] [&_p]:[margin:0] [&_p]:[font-size:0.88rem] [&_p]:[font-weight:400]">
           <UsersIcon /><p>No users match your search.</p>
         </div>
       ) : (
         <>
           {doctors.length > 0 && (
-            <div className="dash-appts__group">
-              <div className="dash-appts__group-label">Doctors ({doctors.length})</div>
-              <div className="admin-users__list">
+            <div className="dash-appts__group [margin-bottom:1.75rem] [&:last-child]:[margin-bottom:0]">
+              <div className="dash-appts__group-label [font-size:0.7rem] [font-weight:700] [letter-spacing:0.1em] [text-transform:uppercase] [color:#607d8b] [margin:0.85rem_0]">Doctors ({doctors.length})</div>
+              <div className="admin-users__list [display:flex] [flex-direction:column] [gap:0.55rem]">
                 {doctors.map((u) => <UserRow key={u.id} user={u} onDelete={onDelete} />)}
               </div>
             </div>
           )}
           {patients.length > 0 && (
-            <div className="dash-appts__group">
-              <div className="dash-appts__group-label">Patients ({patients.length})</div>
-              <div className="admin-users__list">
+            <div className="dash-appts__group [margin-bottom:1.75rem] [&:last-child]:[margin-bottom:0]">
+              <div className="dash-appts__group-label [font-size:0.7rem] [font-weight:700] [letter-spacing:0.1em] [text-transform:uppercase] [color:#607d8b] [margin:0.85rem_0]">Patients ({patients.length})</div>
+              <div className="admin-users__list [display:flex] [flex-direction:column] [gap:0.55rem]">
                 {patients.map((u) => <UserRow key={u.id} user={u} onDelete={onDelete} />)}
               </div>
             </div>
@@ -500,9 +516,9 @@ function AdminOffDaysTab({ doctors, loading, error }) {
   };
 
   if (loading || overrideLoading) return (
-    <div className="dash-appts__loading"><span className="dash-appts__spinner" /> Loading off days…</div>
+    <div className="dash-appts__loading [display:flex] [align-items:center] [gap:0.75rem] [padding:1.5rem_0] [font-size:0.9rem] [color:#607d8b]"><span className="dash-appts__spinner [display:inline-block] [width:16px] [height:16px] [border:2px_solid_#e3eaf5] [border-top-color:#1565c0] [border-radius:50%] animate-spin [flex-shrink:0]" /> Loading off days…</div>
   );
-  if (error || overrideError) return <div className="dash-appts__error">{error || overrideError}</div>;
+  if (error || overrideError) return <div className="dash-appts__error [display:flex] [align-items:center] [gap:0.75rem] [padding:1rem_1.25rem] [border-radius:12px] [font-size:0.88rem] [color:#c62828] [background:#ffebee] [border:1px_solid_#ffcdd2]">{error || overrideError}</div>;
 
   // Flatten all off days, attach doctor info
   const allOffDays = doctors.flatMap((d) =>
@@ -517,24 +533,24 @@ function AdminOffDaysTab({ doctors, loading, error }) {
   const past   = filtered.filter((o) => o.date <  today);
 
   return (
-    <div className="admin-tab-panel">
+    <div className="admin-tab-panel [display:flex] [flex-direction:column] [gap:1.5rem]">
       {/* Doctor filter */}
-      <div className="admin-filter-bar admin-filter-bar--scroll">
+      <div className="admin-filter-bar [display:flex] [flex-wrap:wrap] [gap:0.45rem] admin-filter-bar--scroll [overflow-x:auto] [flex-wrap:nowrap] [padding-bottom:0.25rem] [scrollbar-width:none] [&::-webkit-scrollbar]:[display:none]">
         <button
-          className={`admin-filter-chip${selectedDoctor === "ALL" ? " admin-filter-chip--active" : ""}`}
+          className={`admin-filter-chip [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.38rem_0.85rem] [border-radius:100px] [border:1.5px_solid_#e3eaf5] [background:#f8fafc] [font-family:DM_Sans,_sans-serif] [font-size:0.78rem] [font-weight:600] [color:#607d8b] [cursor:pointer] [white-space:nowrap] [transition:background_0.15s,_border-color_0.15s,_color_0.15s] hover:[background:#e3eaf5] hover:[color:#0b2447]${selectedDoctor === "ALL" ? " admin-filter-chip--active [background:linear-gradient(135deg,_#0b2447_0%,_#1565c0_100%)] [border-color:transparent] [color:#fff] hover:[background:linear-gradient(135deg,_#0d2d5c_0%,_#1976d2_100%)] hover:[color:#fff]" : ""}`}
           onClick={() => setSelectedDoctor("ALL")}
         >
           All Doctors
-          <span className="admin-filter-chip__count">{allOffDays.length}</span>
+          <span className="admin-filter-chip__count [display:inline-flex] [align-items:center] [justify-content:center] [min-width:18px] [height:18px] [padding:0_5px] [border-radius:100px] [font-size:0.65rem] [font-weight:700] [background:rgba(255,_255,_255,_0.22)] [color:inherit] [.admin-filter-chip:not(.admin-filter-chip--active)_&]:[background:#e3eaf5] [.admin-filter-chip:not(.admin-filter-chip--active)_&]:[color:#607d8b]">{allOffDays.length}</span>
         </button>
         {doctors.map((d) => (
           <button
             key={d.id}
-            className={`admin-filter-chip${String(selectedDoctor) === String(d.id) ? " admin-filter-chip--active" : ""}`}
+            className={`admin-filter-chip [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.38rem_0.85rem] [border-radius:100px] [border:1.5px_solid_#e3eaf5] [background:#f8fafc] [font-family:DM_Sans,_sans-serif] [font-size:0.78rem] [font-weight:600] [color:#607d8b] [cursor:pointer] [white-space:nowrap] [transition:background_0.15s,_border-color_0.15s,_color_0.15s] hover:[background:#e3eaf5] hover:[color:#0b2447]${String(selectedDoctor) === String(d.id) ? " admin-filter-chip--active [background:linear-gradient(135deg,_#0b2447_0%,_#1565c0_100%)] [border-color:transparent] [color:#fff] hover:[background:linear-gradient(135deg,_#0d2d5c_0%,_#1976d2_100%)] hover:[color:#fff]" : ""}`}
             onClick={() => setSelectedDoctor(d.id)}
           >
             Dr. {getDoctorName(d)}
-            <span className="admin-filter-chip__count">
+            <span className="admin-filter-chip__count [display:inline-flex] [align-items:center] [justify-content:center] [min-width:18px] [height:18px] [padding:0_5px] [border-radius:100px] [font-size:0.65rem] [font-weight:700] [background:rgba(255,_255,_255,_0.22)] [color:inherit] [.admin-filter-chip:not(.admin-filter-chip--active)_&]:[background:#e3eaf5] [.admin-filter-chip:not(.admin-filter-chip--active)_&]:[color:#607d8b]">
               {(overridesMap[d.id] ?? []).length}
             </span>
           </button>
@@ -542,15 +558,15 @@ function AdminOffDaysTab({ doctors, loading, error }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="dash-appts__empty">
+        <div className="dash-appts__empty [display:flex] [flex-direction:column] [align-items:center] [gap:0.85rem] [padding:3rem_1rem] [text-align:center] [color:#90a4ae] [background:#f8fafc] [border:1.5px_dashed_#cfd8dc] [border-radius:14px] [&_svg]:[color:#b0bec5] [&_p]:[margin:0] [&_p]:[font-size:0.88rem] [&_p]:[font-weight:400]">
           <BanIcon /><p>No off days scheduled.</p>
         </div>
       ) : (
         <>
           {future.length > 0 && (
-            <div className="dash-appts__group">
-              <div className="dash-appts__group-label">Upcoming Off Days ({future.length})</div>
-              <div className="doc-offdays__list">
+            <div className="dash-appts__group [margin-bottom:1.75rem] [&:last-child]:[margin-bottom:0]">
+              <div className="dash-appts__group-label [font-size:0.7rem] [font-weight:700] [letter-spacing:0.1em] [text-transform:uppercase] [color:#607d8b] [margin:0.85rem_0]">Upcoming Off Days ({future.length})</div>
+              <div className="doc-offdays__list [display:flex] [flex-direction:column] [gap:0.6rem]">
                 {future.map((o) => (
                   <AdminOffDayRow
                     key={o.id}
@@ -563,9 +579,9 @@ function AdminOffDaysTab({ doctors, loading, error }) {
             </div>
           )}
           {past.length > 0 && (
-            <div className="dash-appts__group">
-              <div className="dash-appts__group-label">Past Off Days ({past.length})</div>
-              <div className="doc-offdays__list">
+            <div className="dash-appts__group [margin-bottom:1.75rem] [&:last-child]:[margin-bottom:0]">
+              <div className="dash-appts__group-label [font-size:0.7rem] [font-weight:700] [letter-spacing:0.1em] [text-transform:uppercase] [color:#607d8b] [margin:0.85rem_0]">Past Off Days ({past.length})</div>
+              <div className="doc-offdays__list [display:flex] [flex-direction:column] [gap:0.6rem]">
                 {past.map((o) => (
                   <AdminOffDayRow key={o.id} override={o} onDelete={null} deleting={false} />
                 ))}
@@ -583,28 +599,28 @@ function AdminOffDayRow({ override, onDelete, deleting }) {
   const doctorName = override.doctor ? `Dr. ${getDoctorName(override.doctor)}` : null;
 
   return (
-    <div className="doc-offday-row admin-offday-row">
-      <div className="doc-offday-row__left">
-        <div className="doc-offday-row__icon"><BanIcon /></div>
+    <div className="doc-offday-row [display:flex] [align-items:center] [justify-content:space-between] [gap:1rem] [padding:0.85rem_1.1rem] [background:#f8fafc] [border:1px_solid_#e3eaf5] [border-radius:12px] [transition:border-color_0.15s,_box-shadow_0.15s] hover:[border-color:#90caf9] hover:[box-shadow:0_3px_12px_rgba(21,_101,_192,_0.08)] admin-offday-row">
+      <div className="doc-offday-row__left [display:flex] [align-items:center] [gap:0.75rem]">
+        <div className="doc-offday-row__icon [width:34px] [height:34px] [border-radius:9px] [background:#fff3e0] [border:1px_solid_#ffe0b2] [color:#e65100] [display:flex] [align-items:center] [justify-content:center] [flex-shrink:0]"><BanIcon /></div>
         <div>
-          <div className="doc-offday-row__date">{formatDate(override.date)}</div>
+          <div className="doc-offday-row__date [font-size:0.88rem] [font-weight:700] [color:#0b2447]">{formatDate(override.date)}</div>
           {doctorName && (
-            <div className="admin-offday-row__doctor">{doctorName}</div>
+            <div className="admin-offday-row__doctor [font-size:0.78rem] [font-weight:600] [color:#1565c0] [margin-top:1px]">{doctorName}</div>
           )}
           {override.reason && (
-            <div className="doc-offday-row__reason">{override.reason}</div>
+            <div className="doc-offday-row__reason [font-size:0.75rem] [color:#78909c] [font-weight:400] [margin-top:2px]">{override.reason}</div>
           )}
         </div>
       </div>
       {onDelete && (
         <button
-          className="doc-offday-row__del"
+          className="doc-offday-row__del [display:flex] [align-items:center] [justify-content:center] [width:30px] [height:30px] [border-radius:8px] [background:#ffebee] [border:1px_solid_#ffcdd2] [color:#c62828] [cursor:pointer] [transition:background_0.15s,_border-color_0.15s,_transform_0.1s] [flex-shrink:0] [&:hover:not(:disabled)]:[background:#ffcdd2] [&:hover:not(:disabled)]:[border-color:#ef9a9a] [&:hover:not(:disabled)]:[transform:scale(1.05)] disabled:[opacity:0.5] disabled:[cursor:not-allowed]"
           onClick={onDelete}
           disabled={deleting}
           title="Remove off day"
         >
           {deleting
-            ? <span className="dash-appts__spinner" style={{ width: 12, height: 12 }} />
+            ? <span className="dash-appts__spinner [display:inline-block] [border:2px_solid_#e3eaf5] [border-top-color:#1565c0] [border-radius:50%] animate-spin h-3 w-3 [flex-shrink:0]" />
             : <TrashIcon />}
         </button>
       )}
@@ -690,33 +706,33 @@ export default function AdminSection() {
 
   return (
     <>
-      <div className="doc-section">
+      <div className="doc-section [background:#fff] [border-radius:22px] [box-shadow:0_24px_80px_rgba(11,_36,_71,_0.22)] [overflow:hidden] [scroll-margin-top:80px]">
         {/* ── Tab bar ── */}
-        <div className="doc-tabs">
+        <div className="doc-tabs [display:flex] [border-bottom:1px_solid_#e3eaf5] [padding:0_2rem] [gap:0] max-[640px]:[padding:0_1.25rem] max-[640px]:[gap:0]">
           <button
-            className={`doc-tab${tab === "appointments" ? " doc-tab--active" : ""}`}
+            className={`doc-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:1rem_0.25rem] [margin-right:1.75rem] [background:transparent] [border:none] [border-bottom:2.5px_solid_transparent] [font-family:DM_Sans,_sans-serif] [font-size:0.88rem] [font-weight:600] [color:#90a4ae] [cursor:pointer] [transition:color_0.15s,_border-color_0.15s] [position:relative] [top:1px] hover:[color:#455a64] max-[640px]:[font-size:0.82rem] max-[640px]:[margin-right:1.25rem]${tab === "appointments" ? " doc-tab--active" : ""}`}
             onClick={() => setTab("appointments")}
           >
             <CalendarIcon />
             Appointments
             {upcoming.length > 0 && (
-              <span className="doc-tab__badge">{upcoming.length}</span>
+              <span className="doc-tab__badge [display:inline-flex] [align-items:center] [justify-content:center] [min-width:18px] [height:18px] [padding:0_5px] [border-radius:100px] [font-size:0.65rem] [font-weight:700] [background:#e3f2fd] [color:#1565c0]">{upcoming.length}</span>
             )}
           </button>
 
           <button
-            className={`doc-tab${tab === "users" ? " doc-tab--active" : ""}`}
+            className={`doc-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:1rem_0.25rem] [margin-right:1.75rem] [background:transparent] [border:none] [border-bottom:2.5px_solid_transparent] [font-family:DM_Sans,_sans-serif] [font-size:0.88rem] [font-weight:600] [color:#90a4ae] [cursor:pointer] [transition:color_0.15s,_border-color_0.15s] [position:relative] [top:1px] hover:[color:#455a64] max-[640px]:[font-size:0.82rem] max-[640px]:[margin-right:1.25rem]${tab === "users" ? " doc-tab--active" : ""}`}
             onClick={() => setTab("users")}
           >
             <UsersIcon />
             Users
             {nonAdmins.length > 0 && (
-              <span className="doc-tab__badge">{nonAdmins.length}</span>
+              <span className="doc-tab__badge [display:inline-flex] [align-items:center] [justify-content:center] [min-width:18px] [height:18px] [padding:0_5px] [border-radius:100px] [font-size:0.65rem] [font-weight:700] [background:#e3f2fd] [color:#1565c0]">{nonAdmins.length}</span>
             )}
           </button>
 
           <button
-            className={`doc-tab${tab === "offdays" ? " doc-tab--active" : ""}`}
+            className={`doc-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:1rem_0.25rem] [margin-right:1.75rem] [background:transparent] [border:none] [border-bottom:2.5px_solid_transparent] [font-family:DM_Sans,_sans-serif] [font-size:0.88rem] [font-weight:600] [color:#90a4ae] [cursor:pointer] [transition:color_0.15s,_border-color_0.15s] [position:relative] [top:1px] hover:[color:#455a64] max-[640px]:[font-size:0.82rem] max-[640px]:[margin-right:1.25rem]${tab === "offdays" ? " doc-tab--active" : ""}`}
             onClick={() => setTab("offdays")}
           >
             <BanIcon />
@@ -725,7 +741,7 @@ export default function AdminSection() {
         </div>
 
         {/* ── Panels ── */}
-        <div className="doc-panel">
+        <div className="doc-panel [padding:1.75rem_2.5rem_2.25rem] max-[640px]:[padding:1.5rem_1.25rem_2rem]">
           {tab === "appointments" && (
             <AdminAppointmentsTab
               appointments={appointments}
