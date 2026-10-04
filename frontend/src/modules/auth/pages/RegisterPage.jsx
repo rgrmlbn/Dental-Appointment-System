@@ -456,9 +456,9 @@ export default function RegisterPage() {
             </span>
             <span className="text-[0.82rem] leading-[1.6] text-[#607D8B]">
               I agree to the{" "}
-              <a href="#" className="font-semibold text-[#1565C0] no-underline hover:underline">Terms of Service</a>
+              <Link to="/under-construction" onClick={(event) => event.stopPropagation()} className="font-semibold text-[#1565C0] no-underline hover:underline">Terms of Service</Link>
               {" "}and{" "}
-              <a href="#" className="font-semibold text-[#1565C0] no-underline hover:underline">Privacy Policy</a>
+              <Link to="/under-construction" onClick={(event) => event.stopPropagation()} className="font-semibold text-[#1565C0] no-underline hover:underline">Privacy Policy</Link>
             </span>
           </label>
         )}

@@ -989,30 +989,44 @@ function DoctorSection() {
     <>
       {/* ── Tab bar ── */}
       <div className="doc-tabs [display:flex] [gap:0.5rem] [flex-wrap:wrap] max-[640px]:[gap:0.4rem]">
-          <button
-            className={`doc-tab${tab === "appointments" ? " doc-tab--active" : ""}`}
-            aria-pressed={tab === "appointments"}
-            onClick={() => setTab("appointments")}
-          >
-            <UserGroupIcon />
-            My Schedule
-            {upcoming.length > 0 && (
-              <span className="doc-tab__badge [display:inline-flex] [align-items:center] [justify-content:center] [min-width:18px] [height:18px] [padding:0_5px] [border-radius:100px] [font-size:0.65rem] [font-weight:700] [background:#e3f2fd] [color:#1565c0]">{upcoming.length}</span>
-            )}
-          </button>
-          <button
-            className={`doc-tab${tab === "offdays" ? " doc-tab--active" : ""}`}
-            aria-pressed={tab === "offdays"}
-            onClick={() => setTab("offdays")}
-          >
-            <BanIcon />
-            Off Days
-            {futureOff.length > 0 && (
-              <span className="doc-tab__badge [display:inline-flex] [align-items:center] [justify-content:center] [min-width:18px] [height:18px] [padding:0_5px] [border-radius:100px] [font-size:0.65rem] [font-weight:700] [background:#e3f2fd] [color:#1565c0] doc-tab__badge--warn [background:#fff3e0] [color:#e65100]">
-                {futureOff.length}
-              </span>
-            )}
-          </button>
+        <button
+          className={`dash-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:0.6rem_1.1rem] [border-radius:50px] [border:1.5px_solid_rgba(255,255,255,0.25)] [background:rgba(255,255,255,0.1)] [color:rgba(255,255,255,0.75)] [font-family:DM_Sans,_sans-serif] [font-size:0.86rem] [font-weight:500] [cursor:pointer] [transition:border-color_0.18s,_color_0.18s,_box-shadow_0.18s] [backdrop-filter:blur(6px)] hover:[color:#fff] focus-visible:[outline:2px_solid_#fff] focus-visible:[outline-offset:3px] max-[640px]:[font-size:0.8rem] max-[640px]:[padding:0.5rem_0.85rem]${tab === "appointments" ? " dash-tab--active" : ""}`}
+          style={tab === "appointments" ? {
+            background: "rgba(255,255,255,0.1)",
+            color: "#fff",
+            borderColor: "#fff",
+            fontWeight: 600,
+            boxShadow: "0 0 0 2px rgba(255,255,255,0.35)",
+          } : undefined}
+          aria-pressed={tab === "appointments"}
+          onClick={() => setTab("appointments")}
+        >
+          <UserGroupIcon />
+          My Schedule
+          {upcoming.length > 0 && (
+            <span className="doc-tab__badge [display:inline-flex] [align-items:center] [justify-content:center] [min-width:18px] [height:18px] [padding:0_5px] [border-radius:100px] [font-size:0.65rem] [font-weight:700] [background:#e3f2fd] [color:#1565c0]">{upcoming.length}</span>
+          )}
+        </button>
+        <button
+          className={`dash-tab [display:inline-flex] [align-items:center] [gap:0.45rem] [padding:0.6rem_1.1rem] [border-radius:50px] [border:1.5px_solid_rgba(255,255,255,0.25)] [background:rgba(255,255,255,0.1)] [color:rgba(255,255,255,0.75)] [font-family:DM_Sans,_sans-serif] [font-size:0.86rem] [font-weight:500] [cursor:pointer] [transition:border-color_0.18s,_color_0.18s,_box-shadow_0.18s] [backdrop-filter:blur(6px)] hover:[color:#fff] focus-visible:[outline:2px_solid_#fff] focus-visible:[outline-offset:3px] max-[640px]:[font-size:0.8rem] max-[640px]:[padding:0.5rem_0.85rem]${tab === "offdays" ? " dash-tab--active" : ""}`}
+          style={tab === "offdays" ? {
+            background: "rgba(255,255,255,0.1)",
+            color: "#fff",
+            borderColor: "#fff",
+            fontWeight: 600,
+            boxShadow: "0 0 0 2px rgba(255,255,255,0.35)",
+          } : undefined}
+          aria-pressed={tab === "offdays"}
+          onClick={() => setTab("offdays")}
+        >
+          <BanIcon />
+          Off Days
+          {futureOff.length > 0 && (
+            <span className="doc-tab__badge [display:inline-flex] [align-items:center] [justify-content:center] [min-width:18px] [height:18px] [padding:0_5px] [border-radius:100px] [font-size:0.65rem] [font-weight:700] [background:#e3f2fd] [color:#1565c0] doc-tab__badge--warn [background:#fff3e0] [color:#e65100]">
+              {futureOff.length}
+            </span>
+          )}
+        </button>
       </div>
 
       <div className="doc-section [background:#fff] [border-radius:22px] [box-shadow:0_24px_80px_rgba(11,_36,_71,_0.22)] [overflow:hidden] [scroll-margin-top:80px]">

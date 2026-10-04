@@ -157,7 +157,7 @@ export default function LoginPage() {
           </div>
 
         <div className="mt-3 flex justify-end">
-          <a href="#" className="text-[0.8rem] font-semibold text-[#1565C0] no-underline hover:underline">Forgot password?</a>
+          <Link to="/under-construction" className="text-[0.8rem] font-semibold text-[#1565C0] no-underline hover:underline">Forgot password?</Link>
         </div>
 
         {/* CTA */}
