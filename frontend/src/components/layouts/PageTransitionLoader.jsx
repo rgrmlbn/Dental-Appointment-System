@@ -12,17 +12,20 @@ function ContentReady({ onReady }) {
 
 export default function PageTransitionLoader({ children }) {
   const { pathname, search } = useLocation();
-  const [minimumDelayElapsed, setMinimumDelayElapsed] = useState(false);
-  const [contentReady, setContentReady] = useState(false);
-  const isLoading = !minimumDelayElapsed || !contentReady;
+  const routeKey = `${pathname}${search}`;
+  const [minimumDelayRoute, setMinimumDelayRoute] = useState(null);
+  const [contentReadyRoute, setContentReadyRoute] = useState(null);
+  const isLoading =
+    minimumDelayRoute !== routeKey || contentReadyRoute !== routeKey;
 
   useLayoutEffect(() => {
-    setMinimumDelayElapsed(false);
-    setContentReady(false);
-    const timeoutId = window.setTimeout(() => setMinimumDelayElapsed(true), 850);
+    const timeoutId = window.setTimeout(
+      () => setMinimumDelayRoute(routeKey),
+      850,
+    );
 
     return () => window.clearTimeout(timeoutId);
-  }, [pathname, search]);
+  }, [routeKey]);
 
   useLayoutEffect(() => {
     if (!isLoading) return undefined;
@@ -38,13 +41,16 @@ export default function PageTransitionLoader({ children }) {
     };
   }, [isLoading]);
 
-  const handleContentReady = useCallback(() => setContentReady(true), []);
+  const handleContentReady = useCallback(
+    () => setContentReadyRoute(routeKey),
+    [routeKey],
+  );
 
   return (
     <>
       <Suspense fallback={null}>
         <div
-          key={`${pathname}${search}`}
+          key={routeKey}
           className={isLoading ? "page-transition-content--loading" : undefined}
         >
           {children}
