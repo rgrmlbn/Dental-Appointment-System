@@ -314,6 +314,27 @@ const Step4 = ({ data }) => {
   );
 };
 
+const policyContent = {
+  terms: {
+    title: "Terms of Service",
+    paragraphs: [
+      "By creating an account with DentalCare, you agree to provide accurate and complete information during registration and to keep it up to date.",
+      "You are responsible for safeguarding your login credentials and for all activities that occur under your account. We reserve the right to suspend or terminate access if any misuse, fraudulent activity, or violation of applicable laws is detected.",
+      "Appointments, consultations, and services may be subject to availability, scheduling policies, and clinical guidelines. DentalCare may update these terms from time to time, and continued use of the platform after changes are posted constitutes your acceptance of the revised terms.",
+      "All content and services are provided on an as-is basis for informational and scheduling purposes. We do our best to maintain service reliability, but we do not guarantee uninterrupted access or the absence of errors.",
+    ],
+  },
+  privacy: {
+    title: "Privacy Policy",
+    paragraphs: [
+      "DentalCare collects personal information such as your name, contact details, address, and appointment information to provide and improve patient booking and communication services.",
+      "We use your information to verify identity, manage appointments, respond to support requests, and maintain secure records that support your care and account access.",
+      "Your information is stored securely and shared only with authorized personnel, service providers, or legal authorities when required by law or necessary to deliver requested services.",
+      "You may update or request review of your personal information through your account settings or by contacting our support team. We retain records only as needed to operate the service and comply with applicable regulations.",
+    ],
+  },
+};
+
 /* ── Main RegisterPage ──────────────────────────────────────── */
 export default function RegisterPage() {
   const navigate = useNavigate();
@@ -321,6 +342,7 @@ export default function RegisterPage() {
   const [step, setStep]       = useState(1);
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState("");
+  const [activePolicy, setActivePolicy] = useState(null); // "terms" | "privacy" | null
   const [toast, setToast]     = useState(null); // { name }
 
   const {
@@ -407,10 +429,28 @@ export default function RegisterPage() {
     "Review your information before submitting",
   ];
 
+  const activeDocument = activePolicy ? policyContent[activePolicy] : null;
+
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-[linear-gradient(155deg,#0B2447_0%,#1565C0_55%,#1E88E5_100%)] px-4 py-8 [font-family:DM_Sans,sans-serif] max-[600px]:justify-start max-[600px]:pt-16 max-[600px]:pb-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_70%_40%,rgba(30,136,229,0.18)_0%,transparent_70%)]" />
       <div className="pointer-events-none absolute -bottom-20 -left-20 h-[340px] w-[340px] rounded-full bg-[rgba(255,255,255,0.04)]" />
+
+      {activeDocument && (
+        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-[rgba(11,36,71,0.5)] px-4 py-6 backdrop-blur-[2px]" onClick={() => setActivePolicy(null)}>
+          <div className="max-h-[80vh] w-full max-w-[620px] overflow-hidden rounded-[20px] bg-white shadow-[0_24px_80px_rgba(11,36,71,0.35)]" onClick={(event) => event.stopPropagation()}>
+            <div className="flex items-center justify-between border-b border-[rgba(21,101,192,0.12)] px-5 py-4">
+              <h3 className="m-0 text-[1.12rem] font-bold text-[#0B2447]">{activeDocument.title}</h3>
+              <button type="button" onClick={() => setActivePolicy(null)} className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-0 bg-[rgba(21,101,192,0.08)] text-[1.25rem] leading-none text-[#0B2447] transition-colors duration-200 hover:bg-[rgba(21,101,192,0.12)]">×</button>
+            </div>
+            <div className="max-h-[calc(80vh-80px)] overflow-y-auto px-5 py-4 text-[0.9rem] leading-[1.75] text-[#37474F]">
+              {activeDocument.paragraphs.map((paragraph, index) => (
+                <p key={index} className="mb-3 m-0">{paragraph}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Success Toast */}
       {toast && <SuccessToast name={toast.name} onClose={() => navigate("/login")} />}
@@ -456,9 +496,9 @@ export default function RegisterPage() {
             </span>
             <span className="text-[0.82rem] leading-[1.6] text-[#607D8B]">
               I agree to the{" "}
-              <Link to="/under-construction" onClick={(event) => event.stopPropagation()} className="font-semibold text-[#1565C0] no-underline hover:underline">Terms of Service</Link>
+              <button type="button" onClick={() => setActivePolicy("terms")} className="cursor-pointer border-0 bg-transparent p-0 font-semibold text-[#1565C0] no-underline hover:underline">Terms of Service</button>
               {" "}and{" "}
-              <Link to="/under-construction" onClick={(event) => event.stopPropagation()} className="font-semibold text-[#1565C0] no-underline hover:underline">Privacy Policy</Link>
+              <button type="button" onClick={() => setActivePolicy("privacy")} className="cursor-pointer border-0 bg-transparent p-0 font-semibold text-[#1565C0] no-underline hover:underline">Privacy Policy</button>
             </span>
           </label>
         )}

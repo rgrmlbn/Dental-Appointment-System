@@ -90,19 +90,19 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentSummaryResponse> getAppointmentsByDoctor(Long doctorId) {
+    public List<AppointmentResponse> getAppointmentsByDoctor(Long doctorId) {
 
         return appointmentRepository.findByDoctorId(doctorId)
                 .stream()
-                .map(appointmentMapper::toSummaryResponse)
+                .map(appointmentMapper::toResponse)
                 .toList();
     }
 
     @Override
-    public List<AppointmentSummaryResponse> getAppointmentsByPatient(Long patientId) {
+    public List<AppointmentResponse> getAppointmentsByPatient(Long patientId) {
         return appointmentRepository.findByPatientId(patientId)
                 .stream()
-                .map(appointmentMapper::toSummaryResponse)
+                .map(appointmentMapper::toResponse)
                 .toList();
     }
 

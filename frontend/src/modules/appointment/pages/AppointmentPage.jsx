@@ -104,7 +104,7 @@ const Field = ({ label, required, error, children, full }) => (
 );
 
 /* ── Success Screen ─────────────────────────────────────────── */
-const SuccessScreen = ({ form, onReset }) => (
+const SuccessScreen = ({ form }) => (
   <div className="flex flex-col items-center pt-4 pb-2 text-center">
     <div className="mb-[1.1rem] text-[#1565C0]"><CheckCircleIcon /></div>
     <h2 className="mb-3 text-2xl font-bold text-[#0B2447]">Appointment Submitted!</h2>
@@ -113,9 +113,6 @@ const SuccessScreen = ({ form, onReset }) => (
       <strong>{form.date}</strong> at <strong>{form.time}</strong> has been received.
     </p>
     <p className="mb-7 text-[0.82rem] leading-[1.5] text-[#607D8B]">We'll confirm your appointment once reviewed.</p>
-    <div className="flex w-full flex-col items-center gap-[0.85rem]">
-      <button onClick={onReset} className="mt-2 w-full cursor-pointer rounded-[10px] border-0 bg-[linear-gradient(135deg,#0B2447_0%,#1565C0_100%)] p-[0.85rem] text-[0.97rem] font-semibold tracking-[0.01em] text-white shadow-[0_4px_18px_rgba(21,101,192,0.38)] transition-[transform,box-shadow] duration-200 [font-family:inherit] hover:-translate-y-px hover:shadow-[0_8px_28px_rgba(21,101,192,0.45)]">Book Another</button>
-    </div>
   </div>
 );
 
@@ -125,8 +122,8 @@ export default function AppointmentPage() {
     register,
     handleSubmit: handleFormSubmit,
     control,
-    reset,
     setValue,
+    clearErrors,
     formState: { errors },
   } = useForm({
     mode: "onChange",
@@ -182,7 +179,8 @@ export default function AppointmentPage() {
       onChange: event => {
         field.onChange(event);
         if (name === "doctor" || name === "date") {
-          setValue("time", "", { shouldValidate: true });
+          clearErrors("time");
+          setValue("time", "");
         }
         if (submitError) setSubmitError(null);
       },
@@ -206,13 +204,6 @@ export default function AppointmentPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleReset = () => {
-    reset();
-    setSubmitted(false);
-    setSubmitError(null);
-    dispatchSlots({ type: "RESET" });
   };
 
   const today = new Date().toISOString().split("T")[0];
@@ -245,7 +236,7 @@ export default function AppointmentPage() {
         </div>
 
         {submitted ? (
-          <SuccessScreen form={form} onReset={handleReset} />
+          <SuccessScreen form={form} />
         ) : (
           <>
             <div className="mb-5">

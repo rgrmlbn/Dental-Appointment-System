@@ -36,13 +36,13 @@ public class AppointmentController {
     }
 
     @GetMapping("/patient/{patientId}")
-    ResponseEntity<List<AppointmentSummaryResponse>> getAppointmentsByPatientById(@PathVariable Long patientId) {
+    ResponseEntity<List<AppointmentResponse>> getAppointmentsByPatientById(@PathVariable Long patientId) {
 
         return ResponseEntity.ok(appointmentService.getAppointmentsByPatient(patientId));
     }
 
     @GetMapping("/doctor/{doctorId}")    // ← fixed path
-    ResponseEntity<List<AppointmentSummaryResponse>> getAppointmentsByDoctorById(@PathVariable Long doctorId) {
+    ResponseEntity<List<AppointmentResponse>> getAppointmentsByDoctorById(@PathVariable Long doctorId) {
 
         return ResponseEntity.ok(appointmentService.getAppointmentsByDoctor(doctorId));
     }

@@ -218,7 +218,7 @@ function ChangePasswordSection({ user }) {
     setLoading(true);
     try {
       await userApi.changePassword(user.id, values);
-      setToast({ msg: "Password changed. You may need to log in again.", ok: true });
+      setToast({ msg: "Password changed.", ok: true });
       reset();
     } catch (e) {
       setToast({ msg: e.message, ok: false });

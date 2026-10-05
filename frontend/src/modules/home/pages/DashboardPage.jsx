@@ -667,7 +667,7 @@ function AppointmentCard({ appt, onEdit, onCancel, isDoctor }) {
 
       {appt.concerns && (
         <div className="dash-appt-card__concerns [font-size:0.78rem] [color:#78909c] [line-height:1.5] [border-top:1px_solid_#e8edf3] [padding-top:0.6rem] [margin-top:0.1rem]">
-          <span className="dash-appt-card__concerns-label [font-weight:600] [color:#455a64]">Notes:</span>{" "}
+          <span className="dash-appt-card__concerns-label [font-weight:600] [color:#455a64]">Concerns:</span>{" "}
           {appt.concerns}
         </div>
       )}
@@ -1256,7 +1256,7 @@ export default function DashboardPage() {
           <div className="dash-hero__illustration [flex-shrink:0] max-[640px]:[display:none]">
             <div className="dash-hero__tooth-bg [width:110px] [height:110px] [border-radius:50%] [background:linear-gradient(135deg,_#0b2447_0%,_#1565c0_100%)] [box-shadow:0_4px_18px_rgba(21,_101,_192,_0.4)] [display:flex] [align-items:center] [justify-content:center]">
               <img
-                src="../../../../public/tab.png"
+                src="/tab.png"
                 alt="DentalCare tooth"
                 className="dash-hero__tooth-img [width:64px] [height:64px] [object-fit:contain]"
               />

@@ -13,8 +13,8 @@ import java.util.List;
 public interface AppointmentService {
     AppointmentResponse bookAppointment(CreateAppointmentRequest request);
     AppointmentResponse getAppointmentById(Long id);
-    List<AppointmentSummaryResponse> getAppointmentsByDoctor(Long doctorId);
-    List<AppointmentSummaryResponse> getAppointmentsByPatient(Long patientId);
+    List<AppointmentResponse> getAppointmentsByDoctor(Long doctorId);
+    List<AppointmentResponse> getAppointmentsByPatient(Long patientId);
     AppointmentResponse completeAppointment(Long id);
     AppointmentResponse updateAppointment(Long id, UpdateAppointmentRequest request);
     AppointmentResponse cancelAppointment(Long id);
