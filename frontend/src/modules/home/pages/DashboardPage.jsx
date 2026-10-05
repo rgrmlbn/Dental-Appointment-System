@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useAuth } from "../../auth/useAuth.js";
@@ -447,7 +448,7 @@ function EditModal({ appointment, onClose, onSave }) {
     }
   };
 
-  return (
+  return createPortal(
     <div
       className="dash-modal-overlay [position:fixed] [inset:0] [z-index:1000] [background:rgba(11,_36,_71,_0.45)] [backdrop-filter:blur(5px)] [display:flex] [align-items:center] [justify-content:center] [padding:1rem]"
       onClick={(e) => e.target === e.currentTarget && onClose()}
@@ -530,7 +531,8 @@ function EditModal({ appointment, onClose, onSave }) {
         </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

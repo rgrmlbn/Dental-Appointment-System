@@ -360,7 +360,6 @@ export default function AppointmentPage() {
             </div>
 
             <button
-              type="button"
               type="submit"
               className="mt-2 w-full cursor-pointer rounded-[10px] border-0 bg-[linear-gradient(135deg,#0B2447_0%,#1565C0_100%)] p-[0.85rem] text-[0.97rem] font-semibold tracking-[0.01em] text-white shadow-[0_4px_18px_rgba(21,101,192,0.38)] transition-[transform,box-shadow] duration-200 [font-family:inherit] hover:-translate-y-px hover:shadow-[0_8px_28px_rgba(21,101,192,0.45)] disabled:cursor-not-allowed disabled:opacity-60"
               disabled={loading || doctorsLoading || slotsState.loading || doctorUnavailable}

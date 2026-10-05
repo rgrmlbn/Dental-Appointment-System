@@ -293,7 +293,8 @@ function DeleteSection({ user, onDeleted }) {
         </div>
       </div>
       {!open ? (
-        <button className="pf-btn [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.7rem_1.5rem] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [font-weight:600] [cursor:pointer] [transition:transform_0.14s,_box-shadow_0.18s,_background_0.18s] [border:none] disabled:[opacity:0.6] disabled:[cursor:not-allowed] pf-btn--danger-outline [background:none] [border:1.5px_solid_#ef9a9a] [color:#c62828] hover:[background:#ffebee] hover:[border-color:#c62828]" onClick={() => setOpen(true)}>
+        <button type="button" className="pf-btn [display:inline-flex] [align-items:center] [gap:0.4rem] [padding:0.7rem_1.5rem] [border-radius:10px] [font-family:DM_Sans,_sans-serif] [font-size:0.9rem] [font-weight:600] [cursor:pointer] [transition:transform_0.14s,_box-shadow_0.18s,_background_0.18s] [border:none] pf-btn--danger [background:#c62828] [color:#fff] [box-shadow:0_4px_14px_rgba(198,40,40,0.3)] hover:[background:#b71c1c] hover:[transform:translateY(-1px)]" onClick={() => setOpen(true)}>
+          <TrashIcon />
           Delete My Account
         </button>
       ) : (
